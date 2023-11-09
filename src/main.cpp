@@ -61,16 +61,16 @@ int selectedControlPoint = -1;
 void calculatePiecewiseLinearBezier()
 {
     linearBezier.clear();
-    int sz = controlPoints.size(); // Contains 3 points/vertex. Ignore Z
+    int sz = controlPointswithoutdups.size(); // Contains 3 points/vertex. Ignore Z
     float x[2], y[2];
     float delta_t = 1.0 / (SAMPLES_PER_BEZIER - 1.0);
     float t;
     for (int i = 0; i < (sz - 3); i += 3)
     {
-        x[0] = controlPoints[i];
-        y[0] = controlPoints[i + 1];
-        x[1] = controlPoints[i + 3];
-        y[1] = controlPoints[i + 4];
+        x[0] = controlPointswithoutdups[i];
+        y[0] = controlPointswithoutdups[i + 1];
+        x[1] = controlPointswithoutdups[i + 3];
+        y[1] = controlPointswithoutdups[i + 4];
         linearBezier.push_back(x[0]);
         linearBezier.push_back(y[0]);
         linearBezier.push_back(0.0);
@@ -108,8 +108,10 @@ void remove_duplicates(){
 void triangulation(){
     // vector<int> controlPointswithoutdups = cp;
 
-    ofstream MyFile("new.poly");
-    MyFile << to_string(controlPointswithoutdups.size()/3) << " 2 0 0" << endl;
+    // ofstream MyFilepoly("new.poly");
+    ofstream MyFile("new.node");
+    MyFile << to_string(controlPointswithoutdups.size()/3) << " 2 0 1" << endl;
+    // MyFilepoly << to_string(0) << " 2 0 0" << endl;
     // cout<<controlPoints.size()<<endl;
     double x_past = 0;
     double y_past = 0;
@@ -127,9 +129,10 @@ void triangulation(){
     MyFile << "0" << endl;
 
     MyFile.close();
+    // MyFilepoly.close();
     
     system("cd src");
-    system("triangle -p new");
+    system("triangle new");
 }
 
 
