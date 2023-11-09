@@ -89,20 +89,27 @@ void calculatePiecewiseLinearBezier()
     linearBezier.push_back(0.0);
 }
 
+
 void triangulation(vector<float> controlPoints){
     ofstream MyFile("new.poly");
-    MyFile << to_string(controlPoints.size()/2) << " 2 0 1" << endl;
+    MyFile << to_string(controlPoints.size()/3) << " 2 0 0" << endl;
 
-    for(int i=0;i<controlPoints.size();i+=2){
-        MyFile << to_string(i/2+1) << " " << to_string(controlPoints[i]) << " " << to_string(controlPoints[i+1]) << endl;
+    for(int i=0;i<controlPoints.size();i+=3){
+        MyFile << to_string(i/3+1) << " " << to_string(controlPoints[i]) << " " << to_string(controlPoints[i+1]) << endl;
     }
+    MyFile << to_string(controlPoints.size()/3) << "0" << endl;
+    for(int i=0;i<controlPoints.size()-3;i+=3){
+        MyFile << to_string(i/3+1) << " " << to_string(i/3) << " " << to_string(i/3+1) << endl;
+    }
+    MyFile << to_string((controlPoints.size()-3)/3+1) << " " << to_string(i/3) << " " << to_string(0) << endl;
+    MyFile << "0" << endl;
 
-    // Close the file
     MyFile.close();
     
     system("cd src");
     system("triangle -p new");
 }
+
 
 map<int,pair<double,double>> mp;
 vector<int> readele_vector;
