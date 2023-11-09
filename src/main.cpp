@@ -24,6 +24,7 @@
 #include <unistd.h>
 #include <random>
 #include <iostream>
+#include <set>
 #include <fstream>
 #include <sstream>
 #include <stdlib.h>
@@ -49,7 +50,7 @@ int p = 0;
 // GLobal variables
 std::vector<float> controlPoints;
 std::vector<float> controlPoints_triangle;
-
+vector<float> controlPointswithoutdups;
 std::vector<float> linearBezier;
 std::vector<float> cubicBezier;
 int width = 640, height = 640;
@@ -90,18 +91,38 @@ void calculatePiecewiseLinearBezier()
 }
 
 
-void triangulation(vector<float> controlPoints){
-    ofstream MyFile("new.poly");
-    MyFile << to_string(controlPoints.size()/3) << " 2 0 0" << endl;
-
+void remove_duplicates(){
+    set<pair<double,double>> s;
     for(int i=0;i<controlPoints.size();i+=3){
-        MyFile << to_string(i/3+1) << " " << to_string(controlPoints[i]) << " " << to_string(controlPoints[i+1]) << endl;
+        s.insert(make_pair(controlPoints[i],controlPoints[i+1]));
     }
-    MyFile << to_string(controlPoints.size()/3) << "0" << endl;
-    for(int i=0;i<controlPoints.size()-3;i+=3){
+    cout<<s.size()<<endl;
+    for(auto i:s){
+        controlPointswithoutdups.push_back(i.first);
+        controlPointswithoutdups.push_back(i.second);
+        controlPointswithoutdups.push_back(0.0);
+    }
+}
+
+void triangulation(){
+    // vector<int> controlPointswithoutdups = cp;
+
+    ofstream MyFile("new.poly");
+    MyFile << to_string(controlPointswithoutdups.size()/3) << " 2 0 0" << endl;
+    // cout<<controlPoints.size()<<endl;
+    double x_past = 0;
+    double y_past = 0;
+    int vnumber=1;
+    for(int i=0;i<controlPointswithoutdups.size();i+=3){
+        MyFile << to_string(i/3+1) << " " << to_string(controlPointswithoutdups[i]) << " " << to_string(controlPointswithoutdups[i+1]) << endl;
+    }
+    MyFile << to_string(controlPointswithoutdups.size()/3) << "0" << endl;
+    for(int i=0;i<controlPointswithoutdups.size()-3;i+=3){
         MyFile << to_string(i/3+1) << " " << to_string(i/3) << " " << to_string(i/3+1) << endl;
     }
-    MyFile << to_string((controlPoints.size()-3)/3+1) << " " << to_string((controlPoints.size()-3)/3) << " " << to_string(0) << endl;
+
+    
+    MyFile << to_string((controlPointswithoutdups.size()-3)/3+1) << " " << to_string((controlPointswithoutdups.size()-3)/3) << " " << to_string(0) << endl;
     MyFile << "0" << endl;
 
     MyFile.close();
@@ -270,9 +291,10 @@ int main(int, char *argv[])
             mp[i/3+1] = make_pair(controlPoints[i],controlPoints[i+1]);
         }
 
-
+        // cout<<controlPoints.size()<<endl;
         if(ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Tab))){
-            triangulation(controlPoints);
+            remove_duplicates();
+            triangulation();
 
         }
 
