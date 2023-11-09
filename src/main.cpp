@@ -101,7 +101,7 @@ void triangulation(vector<float> controlPoints){
     for(int i=0;i<controlPoints.size()-3;i+=3){
         MyFile << to_string(i/3+1) << " " << to_string(i/3) << " " << to_string(i/3+1) << endl;
     }
-    MyFile << to_string((controlPoints.size()-3)/3+1) << " " << to_string(i/3) << " " << to_string(0) << endl;
+    MyFile << to_string((controlPoints.size()-3)/3+1) << " " << to_string((controlPoints.size()-3)/3) << " " << to_string(0) << endl;
     MyFile << "0" << endl;
 
     MyFile.close();
