@@ -247,7 +247,8 @@
 /*  not used, `numberofsegments' will indicate the number of boundary edges. */
 /*                                                                           */
 /*****************************************************************************/
-
+#define REAL double
+#define ANSI_DECLARATORS
 struct triangulateio {
   REAL *pointlist;                                               /* In / out */
   REAL *pointattributelist;                                      /* In / out */
@@ -282,7 +283,7 @@ struct triangulateio {
 #ifdef ANSI_DECLARATORS
 void triangulate(char *, struct triangulateio *, struct triangulateio *,
                  struct triangulateio *);
-void trifree(VOID *memptr);
+void trifree(void *memptr);
 #else /* not ANSI_DECLARATORS */
 void triangulate();
 void trifree();

@@ -20,20 +20,35 @@
 #include <cmath>
 #include <iostream>
 #include <cstdlib>
+#include <map>
+#include <unistd.h>
 #include <random>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <stdlib.h>
+#define ANSI_DECLARATORS
+// #include "triangle.h"
 
 using namespace std;
 
+#define REAL double
+
+// struct triangulateio{
+//     int a;
+//G }
+// Model, View and Projection Transformation Matrices
 float a = 0.0;
 float b = 0.0;
 bool drawingInProgress = false;
 int c = 0;
 int p = 0;
-#define DRAW_CUBIC_BEZIER 1   // Use to switch Linear and Cubic bezier curves
+#define DRAW_CUBIC_BEZIER 0   // Use to switch Linear and Cubic bezier curves
 #define SAMPLES_PER_BEZIER 10 // Sample each Bezier curve as N=10 segments and draw as connected lines
 
 // GLobal variables
 std::vector<float> controlPoints;
+std::vector<float> controlPoints_triangle;
 
 std::vector<float> linearBezier;
 std::vector<float> cubicBezier;
@@ -42,71 +57,94 @@ bool controlPointsUpdated = false;
 bool controlPointsFinished = false;
 int selectedControlPoint = -1;
 
-
-void calculatePiecewiseCubicBezier()
+void calculatePiecewiseLinearBezier()
 {
-    cubicBezier.clear();        // Clear the vector to accomodate new points such that they maintain C1 continuity
-    c++;
+    linearBezier.clear();
     int sz = controlPoints.size(); // Contains 3 points/vertex. Ignore Z
-    float x[4], y[4];
+    float x[2], y[2];
     float delta_t = 1.0 / (SAMPLES_PER_BEZIER - 1.0);
     float t;
-    int k = 0;
-    for (int i = 0; i < (sz -3); i += 3)    // runs such that atleast 2 points are present
+    for (int i = 0; i < (sz - 3); i += 3)
     {
-        x[0] = controlPoints[i];               //x coordinate of P0
-        y[0] = controlPoints[i + 1];            //y coordinate of P0
-        x[3] = controlPoints[i + 3];            //x coordinate of P3
-        y[3] = controlPoints[i + 4];            //y coordinate of P3
-        float o = max(x[0], x[3]) - min(x[0], x[3]);
-        float p = y[0];
-        if (i == 0)
-        {
-            x[1]=x[0]+o/4;                  //x coordinate of P1
-            y[1]=o;                         //y coordinate of P1
-            x[2]=x[0]+3*(o/4);              //x coordinate of P2
-            y[2]=o+0.5;                     //y coordinate of P2
-        }
-        else
-        {
-            x[1] = 2*x[0]-a;                  //x coordinate of P1
-            y[1] = 2*y[0]-b;                  //y coordinate of P1
-            x[2] = a + 0.05;                    //x coordinate of P2
-            y[2] = b;                           //y coordinate of P2    
-        }
-
+        x[0] = controlPoints[i];
+        y[0] = controlPoints[i + 1];
+        x[1] = controlPoints[i + 3];
+        y[1] = controlPoints[i + 4];
+        linearBezier.push_back(x[0]);
+        linearBezier.push_back(y[0]);
+        linearBezier.push_back(0.0);
         t = 0.0;
-        //generate points on Bezier curve at different values of t between P0 and P3
         for (float j = 1; j < (SAMPLES_PER_BEZIER - 1); j++)
         {
             t += delta_t;
-            float xp = pow(1 - t, 3) * x[0] + 3 * pow(1 - t, 2) * t * x[1] + 3 * (1 - t) * pow(t, 2) * x[2] + pow(t, 3) * x[3];
-            cubicBezier.push_back(xp);
-            float yp = pow(1 - t, 3) * y[0] + 3 * pow(1 - t, 2) * t * y[1] + 3 * (1 - t) * pow(t, 2) * y[2] + pow(t, 3) * y[3];
-            cubicBezier.push_back(yp);
-            cubicBezier.push_back(0.0);
+            linearBezier.push_back(x[0] + t * (x[1] - x[0]));
+            linearBezier.push_back(y[0] + t * (y[1] - y[0]));
+            linearBezier.push_back(0.0);
         }
-
-        a = x[2];
-        b = y[2];
-
-        // k++;
+        // No need to add the last point for this segment, since it will be added as first point in next.
     }
-    // adding the last controol point to the curve P3
-    cubicBezier.push_back(x[3]);
-    cubicBezier.push_back(y[3]);
-    cubicBezier.push_back(0.0);
+    // However, add last point of entire piecewise curve here (i.e, the last control point)
+    linearBezier.push_back(x[1]);
+    linearBezier.push_back(y[1]);
+    linearBezier.push_back(0.0);
+}
+
+void triangulation(vector<float> controlPoints){
+    ofstream MyFile("new.poly");
+    MyFile << to_string(controlPoints.size()/2) << " 2 0 1" << endl;
+
+    for(int i=0;i<controlPoints.size();i+=2){
+        MyFile << to_string(i/2+1) << " " << to_string(controlPoints[i]) << " " << to_string(controlPoints[i+1]) << endl;
+    }
+
+    // Close the file
+    MyFile.close();
     
+    system("cd src");
+    system("triangle -p new");
+}
+
+map<int,pair<double,double>> mp;
+vector<int> readele_vector;
+
+vector<int> readele(){
+    // cout<<"readele"<<endl;
+    string myText;
+    fstream MyReadfile("new.1.ele");
+    int i=0;
+    while (getline(MyReadfile, myText))
+    {   if(i==0){
+            i++;
+            continue;
+        }
+        istringstream iss(myText);
+        int num;
+        while(iss>>num){
+            readele_vector.push_back(num);
+        }
+        // Output the text from the file
+        // cout << myText;
+    }
+    
+
+    // for(int n:readele_vector){
+    //     cout<<n<<" ";
+    // }
+    // Close the file
+    MyReadfile.close();
 }
 
 int main(int, char *argv[])
 {
+    
     GLFWwindow *window = setupWindow(width, height);
     ImGuiIO &io = ImGui::GetIO(); // Create IO object
 
     ImVec4 clear_color = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
 
     unsigned int shaderProgram = createProgram("./shaders/vshader.vs", "./shaders/fshader.fs");
+
+
     glUseProgram(shaderProgram);
 
     // Create VBOs, VAOs
@@ -122,9 +160,12 @@ int main(int, char *argv[])
     // glGenVertexArrays(1, &VAO_controlPoints);
     glGenBuffers(1, &VBO_cubicBezier);
     glGenVertexArrays(1, &VAO_cubicBezier);
-    
+
+    unsigned int VAO;
+    glGenVertexArrays(1, &VAO);
 
     int button_status = 0;
+
 
     // glutDisplayFunc(display);
 
@@ -132,7 +173,6 @@ int main(int, char *argv[])
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
-
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -149,6 +189,8 @@ int main(int, char *argv[])
         glViewport(0, 0, display_w, display_h);
         glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        glBindVertexArray(VAO);
 
         if (!ImGui::IsAnyItemActive())
         {
@@ -198,17 +240,15 @@ int main(int, char *argv[])
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
             glEnableVertexAttribArray(0); // Enable first attribute buffer (vertices)
 
-
-            
-            // Update VAO/VBO for piecewise cubic Bezier curve
-            // TODO:
-            calculatePiecewiseCubicBezier();
-            glBindVertexArray(VAO_cubicBezier);
-            glBindBuffer(GL_ARRAY_BUFFER, VBO_cubicBezier);
-            glBufferData(GL_ARRAY_BUFFER, cubicBezier.size() * sizeof(GLfloat), &cubicBezier[0], GL_DYNAMIC_DRAW);
+            calculatePiecewiseLinearBezier();
+            glBindVertexArray(VAO_linearBezier);
+            glBindBuffer(GL_ARRAY_BUFFER, VBO_linearBezier);
+            glBufferData(GL_ARRAY_BUFFER, linearBezier.size() * sizeof(GLfloat), &linearBezier[0], GL_DYNAMIC_DRAW);
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
             glEnableVertexAttribArray(0); // Enable first attribute buffer (vertices)
 
+            // TODO:
+  
             controlPointsUpdated = false; // Finish all VAO/VBO updates before setting this to false.
             // controlPointsUpdated_n = false;
         }
@@ -219,7 +259,25 @@ int main(int, char *argv[])
         glBindVertexArray(VAO_controlPoints);
         glDrawArrays(GL_POINTS, 0, controlPoints.size() / 3); // Draw points
 
+        for(int i=0;i<controlPoints.size();i+=3){
+            mp[i/3+1] = make_pair(controlPoints[i],controlPoints[i+1]);
+        }
 
+
+        if(ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Tab))){
+            triangulation(controlPoints);
+
+        }
+
+        // if(ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter))){
+            // readele();
+        // }
+
+        for(int i=0;i<readele_vector.size();i++){
+            controlPoints_triangle.push_back(mp[readele_vector[i]].first);
+            controlPoints_triangle.push_back(mp[readele_vector[i]].second);
+        }
+    
         
 
         
@@ -232,8 +290,8 @@ int main(int, char *argv[])
 
 
 #else
-
-        
+    glBindVertexArray(VAO_linearBezier);
+    glDrawArrays(GL_LINE_STRIP, 0, linearBezier.size() / 3); // Draw lines
 
 #endif
 
@@ -245,9 +303,9 @@ int main(int, char *argv[])
 
     // Delete VBO buffers
     glDeleteBuffers(1, &VBO_controlPoints);
-    // glDeleteBuffers(1, &VBO_linearBezier);
+    glDeleteBuffers(1, &VBO_linearBezier);
     // TODO:
-    glDeleteBuffers(1, &VBO_cubicBezier);
+    // glDeleteBuffers(1, &VBO_cubicBezier);
 
     // Cleanup
     cleanup(window);
