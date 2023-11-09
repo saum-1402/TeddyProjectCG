@@ -60,7 +60,7 @@ int selectedControlPoint = -1;
 
 void calculatePiecewiseLinearBezier()
 {
-    // linearBezier.clear();
+    linearBezier.clear();
     int sz = controlPoints_triangle.size(); // Contains 3 points/vertex. Ignore Z
     float x[2], y[2];
     float delta_t = 1.0 / (SAMPLES_PER_BEZIER - 1.0);
@@ -97,7 +97,7 @@ void remove_duplicates(){
     for(int i=0;i<controlPoints.size();i+=3){
         s.insert(make_pair(controlPoints[i],controlPoints[i+1]));
     }
-    cout<<s.size()<<endl;
+    // cout<<s.size()<<endl;
     for(auto i:s){
         controlPointswithoutdups.push_back(i.first);
         controlPointswithoutdups.push_back(i.second);
@@ -114,9 +114,7 @@ void triangulation(){
     for(int i=0;i<controlPointswithoutdups.size();i+=3){
         MyFile << to_string(i/3+1) << " " << to_string(controlPointswithoutdups[i]) << " " << to_string(controlPointswithoutdups[i+1]) << endl;
     }
-    MyFile.close();
-    // MyFilepoly.close();
-    
+    MyFile.close();    
     system("cd src");
     system("triangle new");
 }
@@ -132,6 +130,7 @@ void readele(){
     cout<<"readele1"<<endl;
     int i=0;
     int t = 0;
+    
     while (std::getline(MyReadfile, line))
     {
         std::istringstream iss(line);
@@ -140,6 +139,8 @@ void readele(){
             i++;
             continue;
         }
+        int c = 0;
+        double first;
         while (iss >> word)
         {
 
@@ -157,16 +158,26 @@ void readele(){
             if (isNumber)
             {
                 // Convert the word to a number and store it
-                double number;
+                int number;
                 std::istringstream(word) >> number;
                 if(t==0){
                     t++;
                     continue;
                 }
+                if(c==0){
+                    first = number;
+                }
                 readele_vector.push_back(number);
+                c++;
+                if(c==3){
+                    readele_vector.push_back(first);
+                    // c=0;
+                }
+
             }
         }
     }
+
         
     MyReadfile.close();
 }
@@ -180,31 +191,20 @@ int main(int, char *argv[])
     ImVec4 clear_color = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
 
     unsigned int shaderProgram = createProgram("./shaders/vshader.vs", "./shaders/fshader.fs");
-
-
     glUseProgram(shaderProgram);
 
     // Create VBOs, VAOs
-    unsigned int VBO_controlPoints, VBO_linearBezier, VBO_cubicBezier;
-    unsigned int VAO_controlPoints, VAO_linearBezier, VAO_cubicBezier;
+    unsigned int VBO_controlPoints, VBO_linearBezier;
+    unsigned int VAO_controlPoints, VAO_linearBezier;
     glGenBuffers(1, &VBO_controlPoints);
     glGenVertexArrays(1, &VAO_controlPoints);
 
     glGenBuffers(1, &VBO_linearBezier);
     glGenVertexArrays(1, &VAO_linearBezier);
-    // TODO:
-    // glGenBuffers(1, &VBO_controlPoints);
-    // glGenVertexArrays(1, &VAO_controlPoints);
-    glGenBuffers(1, &VBO_cubicBezier);
-    glGenVertexArrays(1, &VAO_cubicBezier);
 
-    unsigned int VAO;
-    glGenVertexArrays(1, &VAO);
+
 
     int button_status = 0;
-
-
-    // glutDisplayFunc(display);
 
     // Display loop
     while (!glfwWindowShouldClose(window))
@@ -227,7 +227,7 @@ int main(int, char *argv[])
         glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glBindVertexArray(VAO);
+        // glBindVertexArray(VAO);
 
         if (!ImGui::IsAnyItemActive())
         {
@@ -303,8 +303,10 @@ int main(int, char *argv[])
             remove_duplicates();
             triangulation();
             // controlPointswithoutdups.clear();
+            readele_vector.clear();
             readele();
             mp.clear();
+            controlPoints_triangle.clear();
             for(int i=0;i<readele_vector.size();i++){
                 cout<<readele_vector[i]<<" ";
             }
@@ -312,7 +314,7 @@ int main(int, char *argv[])
             {
                 mp[i / 3 + 1] = make_pair(controlPointswithoutdups[i], controlPointswithoutdups[i + 1]);
             }
-            // readele_vector.push_back(2);
+            // readele_vector.push_back(1);
             for(int i=0;i<readele_vector.size();i++){
                 controlPoints_triangle.push_back(mp[readele_vector[i]].first);
                 controlPoints_triangle.push_back(mp[readele_vector[i]].second);
@@ -320,19 +322,6 @@ int main(int, char *argv[])
             }   
 
         }
-
-        // if(ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter))){
-            // readele();
-        // }
-
-        // for(int i=0;i<readele_vector.size();i++){
-        //     controlPoints_triangle.push_back(mp[readele_vector[i]].first);
-        //     controlPoints_triangle.push_back(mp[readele_vector[i]].second);
-        // }
-    
-        
-
-        
 
 #if DRAW_CUBIC_BEZIER
         // TODO:
