@@ -60,17 +60,17 @@ int selectedControlPoint = -1;
 
 void calculatePiecewiseLinearBezier()
 {
-    linearBezier.clear();
-    int sz = controlPointswithoutdups.size(); // Contains 3 points/vertex. Ignore Z
+    // linearBezier.clear();
+    int sz = controlPoints_triangle.size(); // Contains 3 points/vertex. Ignore Z
     float x[2], y[2];
     float delta_t = 1.0 / (SAMPLES_PER_BEZIER - 1.0);
     float t;
     for (int i = 0; i < (sz - 3); i += 3)
     {
-        x[0] = controlPointswithoutdups[i];
-        y[0] = controlPointswithoutdups[i + 1];
-        x[1] = controlPointswithoutdups[i + 3];
-        y[1] = controlPointswithoutdups[i + 4];
+        x[0] = controlPoints_triangle[i];
+        y[0] = controlPoints_triangle[i + 1];
+        x[1] = controlPoints_triangle[i + 3];
+        y[1] = controlPoints_triangle[i + 4];
         linearBezier.push_back(x[0]);
         linearBezier.push_back(y[0]);
         linearBezier.push_back(0.0);
@@ -106,28 +106,14 @@ void remove_duplicates(){
 }
 
 void triangulation(){
-    // vector<int> controlPointswithoutdups = cp;
-
-    // ofstream MyFilepoly("new.poly");
     ofstream MyFile("new.node");
-    MyFile << to_string(controlPointswithoutdups.size()/3) << " 2 0 1" << endl;
-    // MyFilepoly << to_string(0) << " 2 0 0" << endl;
-    // cout<<controlPoints.size()<<endl;
+    MyFile << to_string(controlPointswithoutdups.size()/3) << " 2 0 0" << endl;
     double x_past = 0;
     double y_past = 0;
     int vnumber=1;
     for(int i=0;i<controlPointswithoutdups.size();i+=3){
         MyFile << to_string(i/3+1) << " " << to_string(controlPointswithoutdups[i]) << " " << to_string(controlPointswithoutdups[i+1]) << endl;
     }
-    MyFile << to_string(controlPointswithoutdups.size()/3) << "0" << endl;
-    for(int i=0;i<controlPointswithoutdups.size();i+=3){
-        MyFile << to_string(i/3+1) << " " << to_string(i/3) << " " << to_string(i/3+1) << endl;
-    }
-
-    
-    MyFile << to_string((controlPointswithoutdups.size()-3)/3+1) << " " << to_string((controlPointswithoutdups.size()-3)/3) << " " << to_string(0) << endl;
-    MyFile << "0" << endl;
-
     MyFile.close();
     // MyFilepoly.close();
     
@@ -139,30 +125,49 @@ void triangulation(){
 map<int,pair<double,double>> mp;
 vector<int> readele_vector;
 
-vector<int> readele(){
-    // cout<<"readele"<<endl;
-    string myText;
-    fstream MyReadfile("new.1.ele");
+void readele(){
+    cout<<"readele"<<endl;
+    string line;
+    ifstream MyReadfile("new.1.ele");
+    cout<<"readele1"<<endl;
     int i=0;
-    while (getline(MyReadfile, myText))
-    {   if(i==0){
+    int t = 0;
+    while (std::getline(MyReadfile, line))
+    {
+        std::istringstream iss(line);
+        std::string word;
+        if(i==0){
             i++;
             continue;
         }
-        istringstream iss(myText);
-        int num;
-        while(iss>>num){
-            readele_vector.push_back(num);
-        }
-        // Output the text from the file
-        // cout << myText;
-    }
-    
+        while (iss >> word)
+        {
 
-    // for(int n:readele_vector){
-    //     cout<<n<<" ";
-    // }
-    // Close the file
+            // Check if the word is a number
+            bool isNumber = true;
+            for (char c : word)
+            {
+                if (!std::isdigit(c) && c != '.' && c != '-')
+                {
+                    isNumber = false;
+                    break;
+                }
+            }
+            
+            if (isNumber)
+            {
+                // Convert the word to a number and store it
+                double number;
+                std::istringstream(word) >> number;
+                if(t==0){
+                    t++;
+                    continue;
+                }
+                readele_vector.push_back(number);
+            }
+        }
+    }
+        
     MyReadfile.close();
 }
 
@@ -291,14 +296,28 @@ int main(int, char *argv[])
         glBindVertexArray(VAO_controlPoints);
         glDrawArrays(GL_POINTS, 0, controlPoints.size() / 3); // Draw points
 
-        for(int i=0;i<controlPoints.size();i+=3){
-            mp[i/3+1] = make_pair(controlPoints[i],controlPoints[i+1]);
-        }
+        
 
         // cout<<controlPoints.size()<<endl;
         if(ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Tab))){
             remove_duplicates();
             triangulation();
+            // controlPointswithoutdups.clear();
+            readele();
+            mp.clear();
+            for(int i=0;i<readele_vector.size();i++){
+                cout<<readele_vector[i]<<" ";
+            }
+            for (int i = 0; i < controlPoints.size(); i += 3)
+            {
+                mp[i / 3 + 1] = make_pair(controlPointswithoutdups[i], controlPointswithoutdups[i + 1]);
+            }
+            // readele_vector.push_back(2);
+            for(int i=0;i<readele_vector.size();i++){
+                controlPoints_triangle.push_back(mp[readele_vector[i]].first);
+                controlPoints_triangle.push_back(mp[readele_vector[i]].second);
+                controlPoints_triangle.push_back(0.0);
+            }   
 
         }
 
@@ -306,10 +325,10 @@ int main(int, char *argv[])
             // readele();
         // }
 
-        for(int i=0;i<readele_vector.size();i++){
-            controlPoints_triangle.push_back(mp[readele_vector[i]].first);
-            controlPoints_triangle.push_back(mp[readele_vector[i]].second);
-        }
+        // for(int i=0;i<readele_vector.size();i++){
+        //     controlPoints_triangle.push_back(mp[readele_vector[i]].first);
+        //     controlPoints_triangle.push_back(mp[readele_vector[i]].second);
+        // }
     
         
 
