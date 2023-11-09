@@ -92,6 +92,7 @@ void calculatePiecewiseLinearBezier()
 
 
 void remove_duplicates(){
+    controlPointswithoutdups.clear();
     set<pair<double,double>> s;
     for(int i=0;i<controlPoints.size();i+=3){
         s.insert(make_pair(controlPoints[i],controlPoints[i+1]));
@@ -117,7 +118,7 @@ void triangulation(){
         MyFile << to_string(i/3+1) << " " << to_string(controlPointswithoutdups[i]) << " " << to_string(controlPointswithoutdups[i+1]) << endl;
     }
     MyFile << to_string(controlPointswithoutdups.size()/3) << "0" << endl;
-    for(int i=0;i<controlPointswithoutdups.size()-3;i+=3){
+    for(int i=0;i<controlPointswithoutdups.size();i+=3){
         MyFile << to_string(i/3+1) << " " << to_string(i/3) << " " << to_string(i/3+1) << endl;
     }
 
