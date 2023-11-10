@@ -122,6 +122,7 @@ void triangulation(){
 
 map<int,pair<double,double>> mp;
 vector<int> readele_vector;
+int onlyfirstvertex=0;
 
 void readele(){
     cout<<"readele"<<endl;
@@ -129,18 +130,20 @@ void readele(){
     ifstream MyReadfile("new.1.ele");
     cout<<"readele1"<<endl;
     int i=0;
-    int t = 0;
+    // int t = 0;
     
     while (std::getline(MyReadfile, line))
     {
         std::istringstream iss(line);
         std::string word;
+        int t=0;
         if(i==0){
             i++;
             continue;
         }
         int c = 0;
         double first;
+        // int t=0;
         while (iss >> word)
         {
 
@@ -154,7 +157,6 @@ void readele(){
                     break;
                 }
             }
-            
             if (isNumber)
             {
                 // Convert the word to a number and store it
@@ -169,16 +171,15 @@ void readele(){
                 }
                 readele_vector.push_back(number);
                 c++;
-                if(c==3){
-                    readele_vector.push_back(first);
-                    // c=0;
-                }
+                // if(c==3){
+                //     readele_vector.push_back(first);
+                //     // c=0;
+                //     onlyfirstvertex=1;
+                // }
 
             }
         }
-    }
-
-        
+    } 
     MyReadfile.close();
 }
 
