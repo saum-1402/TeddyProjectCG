@@ -52,7 +52,6 @@ std::vector<float> controlPoints;
 std::vector<float> controlPoints_triangle;
 vector<float> controlPointswithoutdups;
 std::vector<float> linearBezier;
-std::vector<float> cubicBezier;
 int width = 640, height = 640;
 bool controlPointsUpdated = false;
 bool controlPointsFinished = false;
@@ -310,6 +309,9 @@ int main(int, char *argv[])
             controlPoints_triangle.clear();
             for(int i=0;i<readele_vector.size();i++){
                 cout<<readele_vector[i]<<" ";
+                if(i%3==2){
+                    cout<<endl;
+                }
             }
             for (int i = 0; i < controlPoints.size(); i += 3)
             {
