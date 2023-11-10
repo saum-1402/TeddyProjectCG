@@ -26,6 +26,7 @@
 #include <iostream>
 #include <set>
 #include <fstream>
+#include <algorithm>
 #include <sstream>
 #include <stdlib.h>
 #define ANSI_DECLARATORS
@@ -70,6 +71,7 @@ void calculatePiecewiseLinearBezier()
         y[0] = controlPoints_triangle[i + 1];
         x[1] = controlPoints_triangle[i + 3];
         y[1] = controlPoints_triangle[i + 4];
+        // cout<<x[0]<<" "<<y[0]<<" "<<x[1]<<" "<<y[1]<<endl;
         linearBezier.push_back(x[0]);
         linearBezier.push_back(y[0]);
         linearBezier.push_back(0.0);
@@ -104,6 +106,8 @@ void remove_duplicates(){
     }
 }
 
+
+
 void triangulation(){
     ofstream MyFile("new.node");
     MyFile << to_string(controlPointswithoutdups.size()/3) << " 2 0 0" << endl;
@@ -122,26 +126,30 @@ void triangulation(){
 map<int,pair<double,double>> mp;
 vector<int> readele_vector;
 int onlyfirstvertex=0;
+int flag = 0;
 
-void readele(){
-    cout<<"readele"<<endl;
+void readele()
+{
+    cout << "readele" << endl;
     string line;
     ifstream MyReadfile("new.1.ele");
-    cout<<"readele1"<<endl;
-    int i=0;
+    cout << "readele1" << endl;
+    int i = 0;
     // int t = 0;
     
     while (std::getline(MyReadfile, line))
     {
         std::istringstream iss(line);
         std::string word;
-        int t=0;
-        if(i==0){
+        int t = 0;
+        if (i == 0)
+        {
             i++;
             continue;
         }
-        int c = 0;
+        int count = 0;
         double first;
+
         // int t=0;
         while (iss >> word)
         {
@@ -161,24 +169,28 @@ void readele(){
                 // Convert the word to a number and store it
                 int number;
                 std::istringstream(word) >> number;
-                if(t==0){
+                if (t == 0)
+                {
                     t++;
                     continue;
                 }
-                if(c==0){
+                if (count == 0)
+                {
                     first = number;
                 }
-                readele_vector.push_back(number);
-                c++;
-                // if(c==3){
-                //     readele_vector.push_back(first);
-                //     // c=0;
-                //     onlyfirstvertex=1;
-                // }
 
+                readele_vector.push_back(number);
+                count++;
+                if (count == 3 && flag == 0)
+                {
+                    readele_vector.push_back(first);
+                    count = 0;
+                    flag = 1;
+                    // onlyfirstvertex=1;
+                }
             }
         }
-    } 
+    }
     MyReadfile.close();
 }
 
@@ -304,26 +316,33 @@ int main(int, char *argv[])
             triangulation();
             // controlPointswithoutdups.clear();
             readele_vector.clear();
+            flag=0;
             readele();
             mp.clear();
             controlPoints_triangle.clear();
+            cout<<readele_vector.size()<<endl;
             for(int i=0;i<readele_vector.size();i++){
                 cout<<readele_vector[i]<<" ";
                 if(i%3==2){
                     cout<<endl;
                 }
             }
-            for (int i = 0; i < controlPoints.size(); i += 3)
+            for (int i = 0; i < controlPointswithoutdups.size(); i += 3)
             {
                 mp[i / 3 + 1] = make_pair(controlPointswithoutdups[i], controlPointswithoutdups[i + 1]);
             }
             // readele_vector.push_back(1);
+            // cout<<endl;
             for(int i=0;i<readele_vector.size();i++){
                 controlPoints_triangle.push_back(mp[readele_vector[i]].first);
                 controlPoints_triangle.push_back(mp[readele_vector[i]].second);
                 controlPoints_triangle.push_back(0.0);
             }   
-
+            // cout<<"controlPoints_triangle"<<endl;
+            // for(int i=0;i<controlPoints_triangle.size();i+=3){
+            //     cout<<i/3+1<<" "<<controlPoints_triangle[i]<<" "<<controlPoints_triangle[i+1]<<" "<<controlPoints_triangle[i+2]<<endl;
+            // }
+            
         }
 
 #if DRAW_CUBIC_BEZIER
