@@ -1,22 +1,18 @@
-/******************************************************************************
- *                                                                            *
- *  Copyright (c) 2023 Ojaswa Sharma. All rights reserved.                    *
- *                                                                            *
- *  Author: Ojaswa Sharma                                                     *
- *  E-mail: ojaswa@iiitd.ac.in                                                *
- *                                                                            *
- *  This code is provided solely for the purpose of the CSE 333/533 course    *
- *  at IIIT Delhi. Unauthorized reproduction, distribution, or disclosure     *
- *  of this code, in whole or in part, without the prior written consent of   *
- *  the author is strictly prohibited.                                        *
- *                                                                            *
- *  This code is provided "as is", without warranty of any kind, express      *
- *  or implied, including but not limited to the warranties of                *
- *  merchantability, fitness for a particular purpose, and noninfringement.   *
- *                                                                            *
- ******************************************************************************/
+#include "utils/utils.hpp"
+#include "drawable.hpp"
+#include "camera/camera.hpp"
+#include "mesh/mesh.hpp"
 
-#include "utils.h"
+
+#define GLM_FORCE_RADIANS
+#define GLM_ENABLE_EXPERIMENTAL
+
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/string_cast.hpp>
+#include <iostream>
+// #include "utils.h"
 #include <cmath>
 #include <iostream>
 #include <cstdlib>
@@ -29,348 +25,378 @@
 #include <algorithm>
 #include <sstream>
 #include <stdlib.h>
-#define ANSI_DECLARATORS
-// #include "triangle.h"
 
 using namespace std;
 
-#define REAL double
+vector<glm::vec3> points; // Store entered points
+void createAxesLine(unsigned int &, unsigned int &);
 
-// struct triangulateio{
-//     int a;
-//G }
-// Model, View and Projection Transformation Matrices
-float a = 0.0;
-float b = 0.0;
-bool drawingInProgress = false;
-int c = 0;
-int p = 0;
-#define DRAW_CUBIC_BEZIER 0   // Use to switch Linear and Cubic bezier curves
-#define SAMPLES_PER_BEZIER 10 // Sample each Bezier curve as N=10 segments and draw as connected lines
+vector<double> Pointswithoutdups;
 
-// GLobal variables
-std::vector<float> controlPoints;
-std::vector<float> controlPoints_triangle;
-vector<float> controlPointswithoutdups;
-std::vector<float> linearBezier;
-int width = 640, height = 640;
-bool controlPointsUpdated = false;
-bool controlPointsFinished = false;
-int selectedControlPoint = -1;
-
-void calculatePiecewiseLinearBezier()
+void remove_duplicates()
 {
-    linearBezier.clear();
-    int sz = controlPoints_triangle.size(); // Contains 3 points/vertex. Ignore Z
-    float x[2], y[2];
-    float delta_t = 1.0 / (SAMPLES_PER_BEZIER - 1.0);
-    float t;
-    for (int i = 0; i < (sz - 3); i += 3)
-    {
-        x[0] = controlPoints_triangle[i];
-        y[0] = controlPoints_triangle[i + 1];
-        x[1] = controlPoints_triangle[i + 3];
-        y[1] = controlPoints_triangle[i + 4];
-        // cout<<x[0]<<" "<<y[0]<<" "<<x[1]<<" "<<y[1]<<endl;
-        linearBezier.push_back(x[0]);
-        linearBezier.push_back(y[0]);
-        linearBezier.push_back(0.0);
-        t = 0.0;
-        for (float j = 1; j < (SAMPLES_PER_BEZIER - 1); j++)
-        {
-            t += delta_t;
-            linearBezier.push_back(x[0] + t * (x[1] - x[0]));
-            linearBezier.push_back(y[0] + t * (y[1] - y[0]));
-            linearBezier.push_back(0.0);
-        }
-        // No need to add the last point for this segment, since it will be added as first point in next.
-    }
-    // However, add last point of entire piecewise curve here (i.e, the last control point)
-    linearBezier.push_back(x[1]);
-    linearBezier.push_back(y[1]);
-    linearBezier.push_back(0.0);
+	Pointswithoutdups.clear();
+	set<pair<double, double>> s;
+	for (int i = 0; i < points.size(); i += 1)
+	{
+		s.insert(make_pair(static_cast<double>(points[i].x), static_cast<double> (points[i].y)));
+	}
+	// cout<<s.size()<<endl;
+	for (auto i : s)
+	{
+		Pointswithoutdups.push_back(i.first);
+		Pointswithoutdups.push_back(i.second);
+		Pointswithoutdups.push_back(0.0);
+	}
+
+
 }
 
-
-void remove_duplicates(){
-    controlPointswithoutdups.clear();
-    set<pair<double,double>> s;
-    for(int i=0;i<controlPoints.size();i+=3){
-        s.insert(make_pair(controlPoints[i],controlPoints[i+1]));
-    }
-    // cout<<s.size()<<endl;
-    for(auto i:s){
-        controlPointswithoutdups.push_back(i.first);
-        controlPointswithoutdups.push_back(i.second);
-        controlPointswithoutdups.push_back(0.0);
-    }
+void triangulation()
+{
+	ofstream MyFile("new.node");
+	MyFile << to_string(Pointswithoutdups.size() / 3) << " 2 0 0" << endl;
+	double x_past = 0;
+	double y_past = 0;
+	int vnumber = 1;
+	for (int i = 0; i < Pointswithoutdups.size(); i += 3)
+	{
+		MyFile << to_string(i / 3 + 1) << " " << to_string(Pointswithoutdups[i]) << " " << to_string(Pointswithoutdups[i + 1]) << endl;
+	}
+	MyFile.close();
+	system("cd src");
+	system("triangle new");
 }
 
-
-
-void triangulation(){
-    ofstream MyFile("new.node");
-    MyFile << to_string(controlPointswithoutdups.size()/3) << " 2 0 0" << endl;
-    double x_past = 0;
-    double y_past = 0;
-    int vnumber=1;
-    for(int i=0;i<controlPointswithoutdups.size();i+=3){
-        MyFile << to_string(i/3+1) << " " << to_string(controlPointswithoutdups[i]) << " " << to_string(controlPointswithoutdups[i+1]) << endl;
-    }
-    MyFile.close();    
-    system("cd src");
-    system("triangle new");
-}
-
-
-map<int,pair<double,double>> mp;
+map<int, pair<double, double>> mp;
 vector<int> readele_vector;
-int onlyfirstvertex=0;
+int onlyfirstvertex = 0;
 int flag = 0;
 
 void readele()
 {
-    cout << "readele" << endl;
-    string line;
-    ifstream MyReadfile("new.1.ele");
-    cout << "readele1" << endl;
-    int i = 0;
-    // int t = 0;
-    
-    while (std::getline(MyReadfile, line))
-    {
-        std::istringstream iss(line);
-        std::string word;
-        int t = 0;
-        if (i == 0)
-        {
-            i++;
-            continue;
-        }
-        int count = 0;
-        double first;
+	cout << "readele" << endl;
+	string line;
+	ifstream MyReadfile("new.1.ele");
+	cout << "readele1" << endl;
+	int i = 0;
+	// int t = 0;
 
-        // int t=0;
-        while (iss >> word)
-        {
+	while (std::getline(MyReadfile, line))
+	{
+		std::istringstream iss(line);
+		std::string word;
+		int t = 0;
+		if (i == 0)
+		{
+			i++;
+			continue;
+		}
+		int count = 0;
+		double first;
 
-            // Check if the word is a number
-            bool isNumber = true;
-            for (char c : word)
-            {
-                if (!std::isdigit(c) && c != '.' && c != '-')
-                {
-                    isNumber = false;
-                    break;
-                }
-            }
-            if (isNumber)
-            {
-                // Convert the word to a number and store it
-                int number;
-                std::istringstream(word) >> number;
-                if (t == 0)
-                {
-                    t++;
-                    continue;
-                }
-                if (count == 0)
-                {
-                    first = number;
-                }
+		// int t=0;
+		while (iss >> word)
+		{
 
-                readele_vector.push_back(number);
-                count++;
-                if (count == 3 && flag == 0)
-                {
-                    readele_vector.push_back(first);
-                    count = 0;
-                    flag = 1;
-                    // onlyfirstvertex=1;
-                }
-            }
-        }
-    }
-    MyReadfile.close();
+			// Check if the word is a number
+			bool isNumber = true;
+			for (char c : word)
+			{
+				if (!std::isdigit(c) && c != '.' && c != '-')
+				{
+					isNumber = false;
+					break;
+				}
+			}
+			if (isNumber)
+			{
+				// Convert the word to a number and store it
+				int number;
+				std::istringstream(word) >> number;
+				if (t == 0)
+				{
+					t++;
+					continue;
+				}
+				if (count == 0)
+				{
+					first = number;
+				}
+
+				readele_vector.push_back(number);
+				// count++;
+				// if (count == 3 && flag == 0)
+				// {
+				// 	readele_vector.push_back(first);
+				// 	count = 0;
+				// 	flag = 1;
+				// 	// onlyfirstvertex=1;
+				// }
+			}
+		}
+	}
+	MyReadfile.close();
 }
 
-int main(int, char *argv[])
+Mesh *createPointsMesh(const vector<glm::vec3> &points)
 {
-    
-    GLFWwindow *window = setupWindow(width, height);
-    ImGuiIO &io = ImGui::GetIO(); // Create IO object
+	vector<GLfloat> verts;
+	for (const auto &point : points)
+	{
+		verts.push_back(point.x);
+		verts.push_back(point.y);
+		verts.push_back(point.z);
+	}
+	GLuint indices[] = {};
+	return new Mesh(verts.data(), indices, verts.size() / 3, 0);
+}
 
-    ImVec4 clear_color = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+Mesh *newMesh(){
+	vector<GLfloat> verts;
+	for (auto p : Pointswithoutdups)
+	{
+		verts.push_back(p);
+	}
+	vector<GLint> indices;
+	for(auto i:readele_vector){
+		indices.push_back(i);
+	}
+	return new Mesh(verts.data(), reinterpret_cast<GLuint *> (indices.data()), verts.size() / 3, indices.size());
 
-    unsigned int shaderProgram = createProgram("./shaders/vshader.vs", "./shaders/fshader.fs");
-    glUseProgram(shaderProgram);
+	// GLfloat verts[] = {0, 0, 0,
+	// 				   1, 0, 0,
+	// 				   1, 1, 0,
+	// 				   0, 1, 0,
+	// 				   0, 0, 1,
+	// 				   1, 0, 1,
+	// 				   1, 1, 1,
+	// 				   0, 1, 1};
 
-    // Create VBOs, VAOs
-    unsigned int VBO_controlPoints, VBO_linearBezier;
-    unsigned int VAO_controlPoints, VAO_linearBezier;
-    glGenBuffers(1, &VBO_controlPoints);
-    glGenVertexArrays(1, &VAO_controlPoints);
+	// GLuint indices[] = {0, 1, 2,
+	// 					0, 2, 3,
+	// 					4, 5, 6,
+	// 					4, 6, 7,
+	// 					0, 4, 7,
+	// 					0, 7, 3,
+	// 					1, 5, 6,
+	// 					1, 6, 2,
+	// 					0, 1, 5,
+	// 					0, 5, 4,
+	// 					3, 2, 6,
+	// 					3, 6, 7};
 
-    glGenBuffers(1, &VBO_linearBezier);
-    glGenVertexArrays(1, &VAO_linearBezier);
+	// return new Mesh(verts, indices, 8, 12);
+}
 
+int main(int, char **)
+{
+	// Setup window
+	GLFWwindow *window = setupWindow(SCREEN_W, SCREEN_H, "Parametric Representations of Surfaces");
+	ImGuiIO &io = ImGui::GetIO(); // Create IO
 
+	double last_time = 0;
+	double delta_time = 0;
 
-    int button_status = 0;
+	unsigned int shader_program = createProgram("shaders/vshader.vs", "shaders/fshader.fs");
 
-    // Display loop
-    while (!glfwWindowShouldClose(window))
-    {
-        glfwPollEvents();
-        // Start the Dear ImGui frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
+	Camera *cam = new Camera(glm::vec3(-5.0f, 3.0f, 3.5f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f),
+							 45.0f, 0.1f, 10000.0f, window);
 
-        // Rendering
-        showOptionsDialog(controlPoints, io);
-        ImGui::Render();
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
 
-        // Add a new point on mouse click
-        float x, y;
-        int display_w, display_h;
-        glfwGetFramebufferSize(window, &display_w, &display_h);
-        glViewport(0, 0, display_w, display_h);
-        glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-        glClear(GL_COLOR_BUFFER_BIT);
+	GLuint vao, vbo;
 
-        // glBindVertexArray(VAO);
+	// Create a VAO and VBO for the points
+	glGenVertexArrays(1, &vao);
+	glGenBuffers(1, &vbo);
 
-        if (!ImGui::IsAnyItemActive())
-        {
-            if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-            {
-                // Set a flag to indicate that drawing/selection is in progress
-                drawingInProgress = true;
-            }
+	// Bind the VAO
+	glBindVertexArray(vao);
 
-            if (drawingInProgress && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
-            {
-                // Drawing/selection is complete when the left mouse button is released
-                drawingInProgress = false;
-            }
+	// Bind the VBO
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-            if (drawingInProgress)
-            {
-                x = io.MousePos.x;
-                y = io.MousePos.y;
+	// Reserve space for the points (optional but can be more efficient)
+	glBufferData(GL_ARRAY_BUFFER, points.capacity() * sizeof(glm::vec3), nullptr, GL_DYNAMIC_DRAW);
 
-                if (!controlPointsFinished)
-                {
-                    // Add points
-                    addControlPoint(controlPoints, x, y, width, height);
-                    controlPointsUpdated = true;
-                }
-                else
-                {
-                    // Select point
-                    searchNearestControlPoint(x, y);
-                }
-            }
+	// Specify the layout of the vertex data
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void *)0);
+	glEnableVertexAttribArray(0);
 
-            if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
-            {
-                controlPointsFinished = true;
-            }
-        
-        }
+	// Unbind the VAO and VBO
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 
-        if (controlPointsUpdated)
-        {
-            // Update VAO/VBO for control points (since we added a new point)
-            glBindVertexArray(VAO_controlPoints);
-            glBindBuffer(GL_ARRAY_BUFFER, VBO_controlPoints);
-            glBufferData(GL_ARRAY_BUFFER, controlPoints.size() * sizeof(GLfloat), &controlPoints[0], GL_DYNAMIC_DRAW);
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-            glEnableVertexAttribArray(0); // Enable first attribute buffer (vertices)
+	Mesh *pointsMesh = nullptr;
 
-            calculatePiecewiseLinearBezier();
-            glBindVertexArray(VAO_linearBezier);
-            glBindBuffer(GL_ARRAY_BUFFER, VBO_linearBezier);
-            glBufferData(GL_ARRAY_BUFFER, linearBezier.size() * sizeof(GLfloat), &linearBezier[0], GL_DYNAMIC_DRAW);
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-            glEnableVertexAttribArray(0); // Enable first attribute buffer (vertices)
+	// Mesh *newmesh = newMesh();
+	unsigned int axis_VAO;
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	int t=0;
+	
+	while (!glfwWindowShouldClose(window))
+	{
+		// Start the Dear ImGui frame
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
 
-            // TODO:
-  
-            controlPointsUpdated = false; // Finish all VAO/VBO updates before setting this to false.
-            // controlPointsUpdated_n = false;
-        }
+		double curr_time = static_cast<double>(glfwGetTime());
+		delta_time = curr_time - last_time;
+		last_time = curr_time;
 
-        glUseProgram(shaderProgram);
+		if (!io.WantCaptureMouse)
+		{
+			cam->process_input(window, delta_time);
+			cam->setViewTransformation(shader_program);
+			cam->setProjectionTransformation(shader_program);
+		}
 
-        // Draw control points
-        glBindVertexArray(VAO_controlPoints);
-        glDrawArrays(GL_POINTS, 0, controlPoints.size() / 3); // Draw points
+		// Rendering
+		ImGui::Render();
+		int display_w, display_h;
+		glfwGetFramebufferSize(window, &display_w, &display_h);
+		glViewport(0, 0, display_w, display_h);
+		glClearColor(WHITE.x, WHITE.y, WHITE.z, WHITE.w);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        
+		int drawingInProgress = 1;
+		if (!ImGui::IsAnyItemActive())
+		{
+			if (drawingInProgress && ImGui::IsMouseReleased(ImGuiMouseButton_Right))
+			{
+				double xpos, ypos;
+				int screen_width = SCREEN_W;
+				int screen_height = SCREEN_H;
+				glfwGetCursorPos(glfwGetCurrentContext(), &xpos, &ypos);
 
-        // cout<<controlPoints.size()<<endl;
-        if(ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Tab))){
-            remove_duplicates();
-            triangulation();
-            // controlPointswithoutdups.clear();
-            readele_vector.clear();
-            flag=0;
-            readele();
-            mp.clear();
-            controlPoints_triangle.clear();
-            cout<<readele_vector.size()<<endl;
-            for(int i=0;i<readele_vector.size();i++){
-                cout<<readele_vector[i]<<" ";
-                if(i%3==2){
-                    cout<<endl;
-                }
-            }
-            for (int i = 0; i < controlPointswithoutdups.size(); i += 3)
-            {
-                mp[i / 3 + 1] = make_pair(controlPointswithoutdups[i], controlPointswithoutdups[i + 1]);
-            }
-            // readele_vector.push_back(1);
-            // cout<<endl;
-            for(int i=0;i<readele_vector.size();i++){
-                controlPoints_triangle.push_back(mp[readele_vector[i]].first);
-                controlPoints_triangle.push_back(mp[readele_vector[i]].second);
-                controlPoints_triangle.push_back(0.0);
-            }   
-            // cout<<"controlPoints_triangle"<<endl;
-            // for(int i=0;i<controlPoints_triangle.size();i+=3){
-            //     cout<<i/3+1<<" "<<controlPoints_triangle[i]<<" "<<controlPoints_triangle[i+1]<<" "<<controlPoints_triangle[i+2]<<endl;
-            // }
-            
-        }
+				glm::vec3 winPos = glm::vec3(xpos, screen_height - ypos, 0.0f);
+				glm::mat4 modelMatrix = cam->getView();
+				glm::mat4 viewProjection = cam->getProjection();
+				glm::vec4 viewport = glm::vec4(0.0f, 0.0f, screen_width, screen_height);
+				glm::vec3 worldPos = glm::unProject(winPos, modelMatrix, viewProjection, viewport);
+				// worldPos.z = 0.0f;
+				cout << "World coordinates: (" << worldPos.x << ", " << worldPos.y << ", " << worldPos.z << ")" << endl;
+				// worldPos.z = 0.0f;
+				// Add the point to the vector
+				points.push_back(worldPos);
+			}
 
-#if DRAW_CUBIC_BEZIER
-        // TODO:
-        // Draw cubic Bezier
-        // glBindVertexArray(VAO_cubicBezier);
-        // glDrawArrays(GL_LINE_STRIP, 0, cubicBezier.size() / 3); // Draw lines
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+			{
+				drawingInProgress = 0;
+			}
+		}
 
+		if (ImGui::IsMouseReleased(ImGuiMouseButton_Middle))
+		{
+			drawingInProgress = 1;
+		}
 
-#else
-    glBindVertexArray(VAO_linearBezier);
-    glDrawArrays(GL_LINE_STRIP, 0, linearBezier.size() / 3); // Draw lines
+		
 
-#endif
+		// Update the Mesh only if points have changed
+		Mesh *newPointsMesh = createPointsMesh(points);
+		if (newPointsMesh != pointsMesh)
+		{
+			delete pointsMesh;
+			pointsMesh = newPointsMesh;
+		}
 
-        glUseProgram(0);
+		// Draw the Mesh
+		pointsMesh->draw(shader_program);
 
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        glfwSwapBuffers(window);
-    }
+		// createAxesLine(shader_program, axis_VAO);
 
-    // Delete VBO buffers
-    glDeleteBuffers(1, &VBO_controlPoints);
-    glDeleteBuffers(1, &VBO_linearBezier);
-    // TODO:
-    // glDeleteBuffers(1, &VBO_cubicBezier);
+		// Use the shader program
+		glUseProgram(shader_program);
 
-    // Cleanup
-    cleanup(window);
-    return 0;
+		// Bind the VAO
+		glBindVertexArray(vao);
+
+		// Update the VBO with the current points
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(glm::vec3), points.data(), GL_DYNAMIC_DRAW);
+
+		// Render the points
+		glPointSize(10.0f);
+		glDrawArrays(GL_POINTS, 0, points.size());
+
+		// Unbind the VAO
+		glBindVertexArray(0);
+
+		// Unuse the shader program
+		glUseProgram(0);
+
+		// Check for right mouse button
+		if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Tab)))
+		{
+			remove_duplicates();
+			triangulation();
+			Pointswithoutdups.clear();
+			readele_vector.clear();
+			// flag = 0;
+			readele();
+			mp.clear();
+			cout << readele_vector.size() << endl;
+			for (int i = 0; i < readele_vector.size(); i++)
+			{
+				cout << readele_vector[i] << " ";
+				if (i % 3 == 2)
+				{
+					cout << endl;
+				}
+			}
+			t++;
+		}
+		if(t>0){
+			Mesh *newmesh = newMesh();
+			newmesh->draw(shader_program);
+		}
+
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	}
+
+	// Clean up Mesh
+	delete pointsMesh;
+
+	// Cleanup
+	cleanup(window);
+
+	return 0;
+}
+
+void createAxesLine(unsigned int &program, unsigned int &axis_VAO)
+{
+	glUseProgram(program);
+
+	// Bind shader variables
+	int vVertex_attrib_position = glGetAttribLocation(program, "vVertex");
+	if (vVertex_attrib_position == -1)
+	{
+		fprintf(stderr, "Could not bind location: vVertex\n");
+		exit(0);
+	}
+
+	// Axes data
+	GLfloat axis_vertices[] = {0, 0, 0, 20, 0, 0}; // X-axis
+	glGenVertexArrays(1, &axis_VAO);
+	glBindVertexArray(axis_VAO);
+
+	// Create VBO for the VAO
+	int nVertices = 2; // 2 vertices
+	GLuint vertex_VBO;
+	glGenBuffers(1, &vertex_VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_VBO);
+	glBufferData(GL_ARRAY_BUFFER, nVertices * 3 * sizeof(GLfloat), axis_vertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(vVertex_attrib_position);
+	glVertexAttribPointer(vVertex_attrib_position, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0); // Unbind the VAO to disable changes outside this function.
 }

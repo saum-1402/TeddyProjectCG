@@ -1,8 +1,8 @@
 CMakeFiles/Project.dir/depends/imgui/imgui_draw.cpp.o: \
- /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui_draw.cpp \
+ /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/depends/imgui/imgui_draw.cpp \
  /usr/include/stdc-predef.h \
- /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui.h \
- /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imconfig.h \
+ /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/depends/imgui/imgui.h \
+ /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/depends/imgui/imconfig.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h /usr/include/string.h \
@@ -17,7 +17,7 @@ CMakeFiles/Project.dir/depends/imgui/imgui_draw.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/locale_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h \
  /usr/include/strings.h /usr/include/assert.h \
- /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui_internal.h \
+ /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/depends/imgui/imgui_internal.h \
  /usr/include/stdio.h /usr/include/x86_64-linux-gnu/bits/types.h \
  /usr/include/x86_64-linux-gnu/bits/typesizes.h \
  /usr/include/x86_64-linux-gnu/bits/time64.h \
@@ -108,6 +108,6 @@ CMakeFiles/Project.dir/depends/imgui/imgui_draw.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
  /usr/include/x86_64-linux-gnu/bits/xopen_lim.h \
  /usr/include/x86_64-linux-gnu/bits/uio_lim.h \
- /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imstb_textedit.h \
- /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imstb_rectpack.h \
- /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imstb_truetype.h
+ /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/depends/imgui/imstb_textedit.h \
+ /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/depends/imgui/imstb_rectpack.h \
+ /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/depends/imgui/imstb_truetype.h

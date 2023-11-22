@@ -54,10 +54,10 @@ RM = /home/saumil/.local/lib/python3.10/site-packages/cmake/data/bin/cmake -E rm
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/c/Users/SAUMIL/Desktop/CG_Project
+CMAKE_SOURCE_DIR = "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2"
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/c/Users/SAUMIL/Desktop/CG_Project
+CMAKE_BINARY_DIR = "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2"
 
 #=============================================================================
 # Directory level rules for the build root directory
@@ -81,14 +81,14 @@ clean: CMakeFiles/Project.dir/clean
 CMakeFiles/Project.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Project.dir/build.make CMakeFiles/Project.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Project.dir/build.make CMakeFiles/Project.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/mnt/c/Users/SAUMIL/Desktop/CG_Project/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9 "Built target Project"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir="/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/CMakeFiles" --progress-num=1,2,3,4,5,6,7,8,9,10,11 "Built target Project"
 .PHONY : CMakeFiles/Project.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/Project.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/SAUMIL/Desktop/CG_Project/CMakeFiles 9
+	$(CMAKE_COMMAND) -E cmake_progress_start "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/CMakeFiles" 11
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/Project.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/SAUMIL/Desktop/CG_Project/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/CMakeFiles" 0
 .PHONY : CMakeFiles/Project.dir/rule
 
 # Convenience name for target.

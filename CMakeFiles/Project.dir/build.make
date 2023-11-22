@@ -53,10 +53,10 @@ RM = /home/saumil/.local/lib/python3.10/site-packages/cmake/data/bin/cmake -E rm
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/c/Users/SAUMIL/Desktop/CG_Project
+CMAKE_SOURCE_DIR = "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2"
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/c/Users/SAUMIL/Desktop/CG_Project
+CMAKE_BINARY_DIR = "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2"
 
 # Include any dependencies generated for this target.
 include CMakeFiles/Project.dir/depend.make
@@ -72,119 +72,149 @@ include CMakeFiles/Project.dir/flags.make
 CMakeFiles/Project.dir/src/main.cpp.o: CMakeFiles/Project.dir/flags.make
 CMakeFiles/Project.dir/src/main.cpp.o: src/main.cpp
 CMakeFiles/Project.dir/src/main.cpp.o: CMakeFiles/Project.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/c/Users/SAUMIL/Desktop/CG_Project/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Project.dir/src/main.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Project.dir/src/main.cpp.o -MF CMakeFiles/Project.dir/src/main.cpp.o.d -o CMakeFiles/Project.dir/src/main.cpp.o -c /mnt/c/Users/SAUMIL/Desktop/CG_Project/src/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Project.dir/src/main.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Project.dir/src/main.cpp.o -MF CMakeFiles/Project.dir/src/main.cpp.o.d -o CMakeFiles/Project.dir/src/main.cpp.o -c "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/src/main.cpp"
 
 CMakeFiles/Project.dir/src/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Project.dir/src/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/c/Users/SAUMIL/Desktop/CG_Project/src/main.cpp > CMakeFiles/Project.dir/src/main.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/src/main.cpp" > CMakeFiles/Project.dir/src/main.cpp.i
 
 CMakeFiles/Project.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Project.dir/src/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/c/Users/SAUMIL/Desktop/CG_Project/src/main.cpp -o CMakeFiles/Project.dir/src/main.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/src/main.cpp" -o CMakeFiles/Project.dir/src/main.cpp.s
 
-CMakeFiles/Project.dir/src/utils.cpp.o: CMakeFiles/Project.dir/flags.make
-CMakeFiles/Project.dir/src/utils.cpp.o: src/utils.cpp
-CMakeFiles/Project.dir/src/utils.cpp.o: CMakeFiles/Project.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/c/Users/SAUMIL/Desktop/CG_Project/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/Project.dir/src/utils.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Project.dir/src/utils.cpp.o -MF CMakeFiles/Project.dir/src/utils.cpp.o.d -o CMakeFiles/Project.dir/src/utils.cpp.o -c /mnt/c/Users/SAUMIL/Desktop/CG_Project/src/utils.cpp
+CMakeFiles/Project.dir/src/mesh/mesh.cpp.o: CMakeFiles/Project.dir/flags.make
+CMakeFiles/Project.dir/src/mesh/mesh.cpp.o: src/mesh/mesh.cpp
+CMakeFiles/Project.dir/src/mesh/mesh.cpp.o: CMakeFiles/Project.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/Project.dir/src/mesh/mesh.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Project.dir/src/mesh/mesh.cpp.o -MF CMakeFiles/Project.dir/src/mesh/mesh.cpp.o.d -o CMakeFiles/Project.dir/src/mesh/mesh.cpp.o -c "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/src/mesh/mesh.cpp"
 
-CMakeFiles/Project.dir/src/utils.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Project.dir/src/utils.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/c/Users/SAUMIL/Desktop/CG_Project/src/utils.cpp > CMakeFiles/Project.dir/src/utils.cpp.i
+CMakeFiles/Project.dir/src/mesh/mesh.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Project.dir/src/mesh/mesh.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/src/mesh/mesh.cpp" > CMakeFiles/Project.dir/src/mesh/mesh.cpp.i
 
-CMakeFiles/Project.dir/src/utils.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Project.dir/src/utils.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/c/Users/SAUMIL/Desktop/CG_Project/src/utils.cpp -o CMakeFiles/Project.dir/src/utils.cpp.s
+CMakeFiles/Project.dir/src/mesh/mesh.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Project.dir/src/mesh/mesh.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/src/mesh/mesh.cpp" -o CMakeFiles/Project.dir/src/mesh/mesh.cpp.s
+
+CMakeFiles/Project.dir/src/utils/utils.cpp.o: CMakeFiles/Project.dir/flags.make
+CMakeFiles/Project.dir/src/utils/utils.cpp.o: src/utils/utils.cpp
+CMakeFiles/Project.dir/src/utils/utils.cpp.o: CMakeFiles/Project.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/Project.dir/src/utils/utils.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Project.dir/src/utils/utils.cpp.o -MF CMakeFiles/Project.dir/src/utils/utils.cpp.o.d -o CMakeFiles/Project.dir/src/utils/utils.cpp.o -c "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/src/utils/utils.cpp"
+
+CMakeFiles/Project.dir/src/utils/utils.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Project.dir/src/utils/utils.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/src/utils/utils.cpp" > CMakeFiles/Project.dir/src/utils/utils.cpp.i
+
+CMakeFiles/Project.dir/src/utils/utils.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Project.dir/src/utils/utils.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/src/utils/utils.cpp" -o CMakeFiles/Project.dir/src/utils/utils.cpp.s
+
+CMakeFiles/Project.dir/src/camera/camera.cpp.o: CMakeFiles/Project.dir/flags.make
+CMakeFiles/Project.dir/src/camera/camera.cpp.o: src/camera/camera.cpp
+CMakeFiles/Project.dir/src/camera/camera.cpp.o: CMakeFiles/Project.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/Project.dir/src/camera/camera.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Project.dir/src/camera/camera.cpp.o -MF CMakeFiles/Project.dir/src/camera/camera.cpp.o.d -o CMakeFiles/Project.dir/src/camera/camera.cpp.o -c "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/src/camera/camera.cpp"
+
+CMakeFiles/Project.dir/src/camera/camera.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Project.dir/src/camera/camera.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/src/camera/camera.cpp" > CMakeFiles/Project.dir/src/camera/camera.cpp.i
+
+CMakeFiles/Project.dir/src/camera/camera.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Project.dir/src/camera/camera.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/src/camera/camera.cpp" -o CMakeFiles/Project.dir/src/camera/camera.cpp.s
 
 CMakeFiles/Project.dir/depends/imgui/imgui_impl_glfw.cpp.o: CMakeFiles/Project.dir/flags.make
 CMakeFiles/Project.dir/depends/imgui/imgui_impl_glfw.cpp.o: depends/imgui/imgui_impl_glfw.cpp
 CMakeFiles/Project.dir/depends/imgui/imgui_impl_glfw.cpp.o: CMakeFiles/Project.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/c/Users/SAUMIL/Desktop/CG_Project/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/Project.dir/depends/imgui/imgui_impl_glfw.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Project.dir/depends/imgui/imgui_impl_glfw.cpp.o -MF CMakeFiles/Project.dir/depends/imgui/imgui_impl_glfw.cpp.o.d -o CMakeFiles/Project.dir/depends/imgui/imgui_impl_glfw.cpp.o -c /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui_impl_glfw.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/Project.dir/depends/imgui/imgui_impl_glfw.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Project.dir/depends/imgui/imgui_impl_glfw.cpp.o -MF CMakeFiles/Project.dir/depends/imgui/imgui_impl_glfw.cpp.o.d -o CMakeFiles/Project.dir/depends/imgui/imgui_impl_glfw.cpp.o -c "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/depends/imgui/imgui_impl_glfw.cpp"
 
 CMakeFiles/Project.dir/depends/imgui/imgui_impl_glfw.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Project.dir/depends/imgui/imgui_impl_glfw.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui_impl_glfw.cpp > CMakeFiles/Project.dir/depends/imgui/imgui_impl_glfw.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/depends/imgui/imgui_impl_glfw.cpp" > CMakeFiles/Project.dir/depends/imgui/imgui_impl_glfw.cpp.i
 
 CMakeFiles/Project.dir/depends/imgui/imgui_impl_glfw.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Project.dir/depends/imgui/imgui_impl_glfw.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui_impl_glfw.cpp -o CMakeFiles/Project.dir/depends/imgui/imgui_impl_glfw.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/depends/imgui/imgui_impl_glfw.cpp" -o CMakeFiles/Project.dir/depends/imgui/imgui_impl_glfw.cpp.s
 
 CMakeFiles/Project.dir/depends/imgui/imgui_impl_opengl3.cpp.o: CMakeFiles/Project.dir/flags.make
 CMakeFiles/Project.dir/depends/imgui/imgui_impl_opengl3.cpp.o: depends/imgui/imgui_impl_opengl3.cpp
 CMakeFiles/Project.dir/depends/imgui/imgui_impl_opengl3.cpp.o: CMakeFiles/Project.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/c/Users/SAUMIL/Desktop/CG_Project/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/Project.dir/depends/imgui/imgui_impl_opengl3.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Project.dir/depends/imgui/imgui_impl_opengl3.cpp.o -MF CMakeFiles/Project.dir/depends/imgui/imgui_impl_opengl3.cpp.o.d -o CMakeFiles/Project.dir/depends/imgui/imgui_impl_opengl3.cpp.o -c /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui_impl_opengl3.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/Project.dir/depends/imgui/imgui_impl_opengl3.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Project.dir/depends/imgui/imgui_impl_opengl3.cpp.o -MF CMakeFiles/Project.dir/depends/imgui/imgui_impl_opengl3.cpp.o.d -o CMakeFiles/Project.dir/depends/imgui/imgui_impl_opengl3.cpp.o -c "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/depends/imgui/imgui_impl_opengl3.cpp"
 
 CMakeFiles/Project.dir/depends/imgui/imgui_impl_opengl3.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Project.dir/depends/imgui/imgui_impl_opengl3.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui_impl_opengl3.cpp > CMakeFiles/Project.dir/depends/imgui/imgui_impl_opengl3.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/depends/imgui/imgui_impl_opengl3.cpp" > CMakeFiles/Project.dir/depends/imgui/imgui_impl_opengl3.cpp.i
 
 CMakeFiles/Project.dir/depends/imgui/imgui_impl_opengl3.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Project.dir/depends/imgui/imgui_impl_opengl3.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui_impl_opengl3.cpp -o CMakeFiles/Project.dir/depends/imgui/imgui_impl_opengl3.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/depends/imgui/imgui_impl_opengl3.cpp" -o CMakeFiles/Project.dir/depends/imgui/imgui_impl_opengl3.cpp.s
 
 CMakeFiles/Project.dir/depends/imgui/imgui.cpp.o: CMakeFiles/Project.dir/flags.make
 CMakeFiles/Project.dir/depends/imgui/imgui.cpp.o: depends/imgui/imgui.cpp
 CMakeFiles/Project.dir/depends/imgui/imgui.cpp.o: CMakeFiles/Project.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/c/Users/SAUMIL/Desktop/CG_Project/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/Project.dir/depends/imgui/imgui.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Project.dir/depends/imgui/imgui.cpp.o -MF CMakeFiles/Project.dir/depends/imgui/imgui.cpp.o.d -o CMakeFiles/Project.dir/depends/imgui/imgui.cpp.o -c /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/Project.dir/depends/imgui/imgui.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Project.dir/depends/imgui/imgui.cpp.o -MF CMakeFiles/Project.dir/depends/imgui/imgui.cpp.o.d -o CMakeFiles/Project.dir/depends/imgui/imgui.cpp.o -c "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/depends/imgui/imgui.cpp"
 
 CMakeFiles/Project.dir/depends/imgui/imgui.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Project.dir/depends/imgui/imgui.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui.cpp > CMakeFiles/Project.dir/depends/imgui/imgui.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/depends/imgui/imgui.cpp" > CMakeFiles/Project.dir/depends/imgui/imgui.cpp.i
 
 CMakeFiles/Project.dir/depends/imgui/imgui.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Project.dir/depends/imgui/imgui.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui.cpp -o CMakeFiles/Project.dir/depends/imgui/imgui.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/depends/imgui/imgui.cpp" -o CMakeFiles/Project.dir/depends/imgui/imgui.cpp.s
 
 CMakeFiles/Project.dir/depends/imgui/imgui_demo.cpp.o: CMakeFiles/Project.dir/flags.make
 CMakeFiles/Project.dir/depends/imgui/imgui_demo.cpp.o: depends/imgui/imgui_demo.cpp
 CMakeFiles/Project.dir/depends/imgui/imgui_demo.cpp.o: CMakeFiles/Project.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/c/Users/SAUMIL/Desktop/CG_Project/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/Project.dir/depends/imgui/imgui_demo.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Project.dir/depends/imgui/imgui_demo.cpp.o -MF CMakeFiles/Project.dir/depends/imgui/imgui_demo.cpp.o.d -o CMakeFiles/Project.dir/depends/imgui/imgui_demo.cpp.o -c /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui_demo.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/Project.dir/depends/imgui/imgui_demo.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Project.dir/depends/imgui/imgui_demo.cpp.o -MF CMakeFiles/Project.dir/depends/imgui/imgui_demo.cpp.o.d -o CMakeFiles/Project.dir/depends/imgui/imgui_demo.cpp.o -c "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/depends/imgui/imgui_demo.cpp"
 
 CMakeFiles/Project.dir/depends/imgui/imgui_demo.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Project.dir/depends/imgui/imgui_demo.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui_demo.cpp > CMakeFiles/Project.dir/depends/imgui/imgui_demo.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/depends/imgui/imgui_demo.cpp" > CMakeFiles/Project.dir/depends/imgui/imgui_demo.cpp.i
 
 CMakeFiles/Project.dir/depends/imgui/imgui_demo.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Project.dir/depends/imgui/imgui_demo.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui_demo.cpp -o CMakeFiles/Project.dir/depends/imgui/imgui_demo.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/depends/imgui/imgui_demo.cpp" -o CMakeFiles/Project.dir/depends/imgui/imgui_demo.cpp.s
 
 CMakeFiles/Project.dir/depends/imgui/imgui_draw.cpp.o: CMakeFiles/Project.dir/flags.make
 CMakeFiles/Project.dir/depends/imgui/imgui_draw.cpp.o: depends/imgui/imgui_draw.cpp
 CMakeFiles/Project.dir/depends/imgui/imgui_draw.cpp.o: CMakeFiles/Project.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/c/Users/SAUMIL/Desktop/CG_Project/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/Project.dir/depends/imgui/imgui_draw.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Project.dir/depends/imgui/imgui_draw.cpp.o -MF CMakeFiles/Project.dir/depends/imgui/imgui_draw.cpp.o.d -o CMakeFiles/Project.dir/depends/imgui/imgui_draw.cpp.o -c /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui_draw.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/Project.dir/depends/imgui/imgui_draw.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Project.dir/depends/imgui/imgui_draw.cpp.o -MF CMakeFiles/Project.dir/depends/imgui/imgui_draw.cpp.o.d -o CMakeFiles/Project.dir/depends/imgui/imgui_draw.cpp.o -c "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/depends/imgui/imgui_draw.cpp"
 
 CMakeFiles/Project.dir/depends/imgui/imgui_draw.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Project.dir/depends/imgui/imgui_draw.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui_draw.cpp > CMakeFiles/Project.dir/depends/imgui/imgui_draw.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/depends/imgui/imgui_draw.cpp" > CMakeFiles/Project.dir/depends/imgui/imgui_draw.cpp.i
 
 CMakeFiles/Project.dir/depends/imgui/imgui_draw.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Project.dir/depends/imgui/imgui_draw.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui_draw.cpp -o CMakeFiles/Project.dir/depends/imgui/imgui_draw.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/depends/imgui/imgui_draw.cpp" -o CMakeFiles/Project.dir/depends/imgui/imgui_draw.cpp.s
 
 CMakeFiles/Project.dir/depends/imgui/imgui_widgets.cpp.o: CMakeFiles/Project.dir/flags.make
 CMakeFiles/Project.dir/depends/imgui/imgui_widgets.cpp.o: depends/imgui/imgui_widgets.cpp
 CMakeFiles/Project.dir/depends/imgui/imgui_widgets.cpp.o: CMakeFiles/Project.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/mnt/c/Users/SAUMIL/Desktop/CG_Project/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/Project.dir/depends/imgui/imgui_widgets.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Project.dir/depends/imgui/imgui_widgets.cpp.o -MF CMakeFiles/Project.dir/depends/imgui/imgui_widgets.cpp.o.d -o CMakeFiles/Project.dir/depends/imgui/imgui_widgets.cpp.o -c /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui_widgets.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/Project.dir/depends/imgui/imgui_widgets.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Project.dir/depends/imgui/imgui_widgets.cpp.o -MF CMakeFiles/Project.dir/depends/imgui/imgui_widgets.cpp.o.d -o CMakeFiles/Project.dir/depends/imgui/imgui_widgets.cpp.o -c "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/depends/imgui/imgui_widgets.cpp"
 
 CMakeFiles/Project.dir/depends/imgui/imgui_widgets.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Project.dir/depends/imgui/imgui_widgets.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui_widgets.cpp > CMakeFiles/Project.dir/depends/imgui/imgui_widgets.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/depends/imgui/imgui_widgets.cpp" > CMakeFiles/Project.dir/depends/imgui/imgui_widgets.cpp.i
 
 CMakeFiles/Project.dir/depends/imgui/imgui_widgets.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Project.dir/depends/imgui/imgui_widgets.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui_widgets.cpp -o CMakeFiles/Project.dir/depends/imgui/imgui_widgets.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/depends/imgui/imgui_widgets.cpp" -o CMakeFiles/Project.dir/depends/imgui/imgui_widgets.cpp.s
 
 # Object files for target Project
 Project_OBJECTS = \
 "CMakeFiles/Project.dir/src/main.cpp.o" \
-"CMakeFiles/Project.dir/src/utils.cpp.o" \
+"CMakeFiles/Project.dir/src/mesh/mesh.cpp.o" \
+"CMakeFiles/Project.dir/src/utils/utils.cpp.o" \
+"CMakeFiles/Project.dir/src/camera/camera.cpp.o" \
 "CMakeFiles/Project.dir/depends/imgui/imgui_impl_glfw.cpp.o" \
 "CMakeFiles/Project.dir/depends/imgui/imgui_impl_opengl3.cpp.o" \
 "CMakeFiles/Project.dir/depends/imgui/imgui.cpp.o" \
@@ -196,7 +226,9 @@ Project_OBJECTS = \
 Project_EXTERNAL_OBJECTS =
 
 Project: CMakeFiles/Project.dir/src/main.cpp.o
-Project: CMakeFiles/Project.dir/src/utils.cpp.o
+Project: CMakeFiles/Project.dir/src/mesh/mesh.cpp.o
+Project: CMakeFiles/Project.dir/src/utils/utils.cpp.o
+Project: CMakeFiles/Project.dir/src/camera/camera.cpp.o
 Project: CMakeFiles/Project.dir/depends/imgui/imgui_impl_glfw.cpp.o
 Project: CMakeFiles/Project.dir/depends/imgui/imgui_impl_opengl3.cpp.o
 Project: CMakeFiles/Project.dir/depends/imgui/imgui.cpp.o
@@ -209,7 +241,7 @@ Project: /usr/lib/x86_64-linux-gnu/libGLU.so
 Project: /usr/lib/x86_64-linux-gnu/libglfw.so.3.3
 Project: /usr/lib/x86_64-linux-gnu/libGLEW.so
 Project: CMakeFiles/Project.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/mnt/c/Users/SAUMIL/Desktop/CG_Project/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX executable Project"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable Project"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Project.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -221,6 +253,6 @@ CMakeFiles/Project.dir/clean:
 .PHONY : CMakeFiles/Project.dir/clean
 
 CMakeFiles/Project.dir/depend:
-	cd /mnt/c/Users/SAUMIL/Desktop/CG_Project && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /mnt/c/Users/SAUMIL/Desktop/CG_Project /mnt/c/Users/SAUMIL/Desktop/CG_Project /mnt/c/Users/SAUMIL/Desktop/CG_Project /mnt/c/Users/SAUMIL/Desktop/CG_Project /mnt/c/Users/SAUMIL/Desktop/CG_Project/CMakeFiles/Project.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2" && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2" "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2" "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2" "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2" "/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/CMakeFiles/Project.dir/DependInfo.cmake" "--color=$(COLOR)"
 .PHONY : CMakeFiles/Project.dir/depend
 
