@@ -33,6 +33,56 @@ void createAxesLine(unsigned int &, unsigned int &);
 
 vector<double> Pointswithoutdups;
 
+vector<glm::vec3> midpoints;
+map<int, pair<double, double>> mp;
+vector<int> readele_vector;
+int onlyfirstvertex = 0;
+int flag = 0;
+
+void drawLineSegment(const glm::vec3 &p1, const glm::vec3 &p2) {
+    glBegin(GL_LINES);
+    glVertex3f(p1.x, p1.y, p1.z);
+    glVertex3f(p2.x, p2.y, p2.z);
+    glEnd();
+}
+// Function to calculate the midpoint of an edge
+glm::vec3 calculateEdgeMidpoint(const glm::vec3 &p1, const glm::vec3 &p2) {
+    return glm::vec3((p1.x + p2.x) / 2.0f, (p1.y + p2.y) / 2.0f, (p1.z + p2.z) / 2.0f);
+}
+
+// Function to calculate and draw the chordal axis or spine
+void calculateAndDrawChordalAxis(const vector<glm::vec3> &points) {
+    // Iterate over the triangulation vertices and connect midpoints to form the chordal axis
+    for (size_t i = 0; i < readele_vector.size(); i += 3) {
+        int v1_index = readele_vector[i] - 1;
+        int v2_index = readele_vector[i + 1] - 1;
+
+        // Retrieve vertices from the points vector
+        const glm::vec3 &v1 = points[v1_index];
+        const glm::vec3 &v2 = points[v2_index];
+
+        // Calculate the midpoint of the edge
+        glm::vec3 midpoint = calculateEdgeMidpoint(v1, v2);
+		midpoints.push_back(midpoint);
+
+
+
+
+        // Draw or visualize the chordal axis line segment (midpoint can be used as the axis point)
+        // TODO: Add your drawing or visualization code here.
+    }
+	
+	
+	//for (size_t i = 0; i < midpoints.size() - 1; ++i) {
+        //if (i + 1 < midpoints.size()) {
+            //drawLineSegment(midpoints[i], midpoints[i + 1]);
+		//}
+	//}
+
+}
+
+
+
 void remove_duplicates()
 {
 	Pointswithoutdups.clear();
@@ -67,11 +117,6 @@ void triangulation()
 	system("cd src");
 	system("triangle new");
 }
-
-map<int, pair<double, double>> mp;
-vector<int> readele_vector;
-int onlyfirstvertex = 0;
-int flag = 0;
 
 void readele()
 {
@@ -356,6 +401,7 @@ int main(int, char **)
 			Mesh *newmesh = newMesh();
 			newmesh->draw(shader_program);
 		}
+		calculateAndDrawChordalAxis(points);
 
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwSwapBuffers(window);
