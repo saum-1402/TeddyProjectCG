@@ -120,6 +120,7 @@ void triangulation()
 
 void readele()
 {
+	readele_vector.clear();
 	cout << "readele" << endl;
 	string line;
 	ifstream MyReadfile("new.1.ele");
