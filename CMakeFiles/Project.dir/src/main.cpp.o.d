@@ -1,9 +1,9 @@
 CMakeFiles/Project.dir/src/main.cpp.o: \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/src/main.cpp \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/src/main.cpp \
  /usr/include/stdc-predef.h \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/src/utils/utils.hpp \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/depends/imgui/imgui.h \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/depends/imgui/imconfig.h \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/src/utils/utils.hpp \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui.h \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imconfig.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h /usr/include/string.h \
@@ -18,8 +18,8 @@ CMakeFiles/Project.dir/src/main.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/locale_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h \
  /usr/include/strings.h /usr/include/assert.h \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/depends/imgui/imgui_impl_glfw.h \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/depends/imgui/imgui_impl_opengl3.h \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui_impl_glfw.h \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui_impl_opengl3.h \
  /usr/include/glm/vec3.hpp /usr/include/glm/ext/vector_bool3.hpp \
  /usr/include/glm/detail/type_vec3.hpp \
  /usr/include/glm/detail/qualifier.hpp /usr/include/glm/detail/setup.hpp \
@@ -349,12 +349,12 @@ CMakeFiles/Project.dir/src/main.cpp.o: \
  /usr/include/c++/11/bits/stl_bvector.h \
  /usr/include/c++/11/bits/vector.tcc /usr/include/GL/glew.h \
  /usr/include/GL/glu.h /usr/include/GL/gl.h /usr/include/GLFW/glfw3.h \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/src/drawable.hpp \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/src/camera/camera.hpp \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/src/globals.hpp \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/src/utils/utils.hpp \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/src/mesh/mesh.hpp \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/src/drawable.hpp \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/src/drawable.hpp \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/src/camera/camera.hpp \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/src/globals.hpp \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/src/utils/utils.hpp \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/src/mesh/mesh.hpp \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/src/drawable.hpp \
  /usr/include/glm/gtx/string_cast.hpp \
  /usr/include/glm/gtc/type_precision.hpp \
  /usr/include/glm/gtc/type_precision.inl \

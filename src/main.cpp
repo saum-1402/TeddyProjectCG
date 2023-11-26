@@ -41,8 +41,8 @@ int flag = 0;
 
 void drawLineSegment(const glm::vec3 &p1, const glm::vec3 &p2) {
     glBegin(GL_LINES);
-    glVertex3f(p1.x, p1.y, p1.z);
-    glVertex3f(p2.x, p2.y, p2.z);
+    glVertex3f(1, 2, 3);
+    glVertex3f(4, 5, 6);
     glEnd();
 }
 // Function to calculate the midpoint of an edge
@@ -86,17 +86,17 @@ void calculateAndDrawChordalAxis(const vector<glm::vec3> &points) {
 void remove_duplicates()
 {
 	Pointswithoutdups.clear();
-	set<pair<double, double>> s;
+	set<pair<float, float>> s;
 	for (int i = 0; i < points.size(); i += 1)
 	{
-		s.insert(make_pair(static_cast<double>(points[i].x), static_cast<double> (points[i].y)));
+		s.insert(make_pair(static_cast<float>(points[i].x), static_cast<float> (points[i].y)));
 	}
 	// cout<<s.size()<<endl;
 	for (auto i : s)
 	{
 		Pointswithoutdups.push_back(i.first);
 		Pointswithoutdups.push_back(i.second);
-		Pointswithoutdups.push_back(0.0);
+		Pointswithoutdups.push_back(0.0f);
 	}
 
 
@@ -199,15 +199,23 @@ Mesh *createPointsMesh(const vector<glm::vec3> &points)
 
 Mesh *newMesh(){
 	vector<GLfloat> verts;
+	// verts = {0, 0, 0,
+	// 		 1, 0, 0,
+	// 		 1, 1, 0};
 	for (auto p : Pointswithoutdups)
 	{
-		verts.push_back(p);
+		int k = p;
+		verts.push_back(k);
 	}
 	vector<GLint> indices;
+	// indices = {0, 1, 2};
 	for(auto i:readele_vector){
-		indices.push_back(i);
+		// cout<<i<<" ";
+		indices.push_back(i-1);
 	}
-	return new Mesh(verts.data(), reinterpret_cast<GLuint *> (indices.data()), verts.size() / 3, indices.size());
+	cout<<verts.size()<<"balh"<<endl;
+	cout<<indices.size()<<"he he"<<endl;
+	return new Mesh(verts.data(), reinterpret_cast<GLuint *> (indices.data()), verts.size()/3, indices.size()/3);
 
 	// GLfloat verts[] = {0, 0, 0,
 	// 				   1, 0, 0,
@@ -218,20 +226,20 @@ Mesh *newMesh(){
 	// 				   1, 1, 1,
 	// 				   0, 1, 1};
 
-	// GLuint indices[] = {0, 1, 2,
-	// 					0, 2, 3,
-	// 					4, 5, 6,
-	// 					4, 6, 7,
-	// 					0, 4, 7,
-	// 					0, 7, 3,
-	// 					1, 5, 6,
-	// 					1, 6, 2,
-	// 					0, 1, 5,
-	// 					0, 5, 4,
-	// 					3, 2, 6,
-	// 					3, 6, 7};
+	// GLuint indices[] = {0, 1, 2};
+	// 					// 0, 2, 3,
+	// 					// 4, 5, 6,
+	// 					// 4, 6, 7,
+	// 					// 0, 4, 7,
+	// 					// 0, 7, 3,
+	// 					// 1, 5, 6,
+	// 					// 1, 6, 2,
+	// 					// 0, 1, 5,
+	// 					// 0, 5, 4,
+	// 					// 3, 2, 6,
+	// 					// 3, 6, 7};
 
-	// return new Mesh(verts, indices, 8, 12);
+	// return new Mesh(verts, indices, 8, 1);
 }
 
 int main(int, char **)
@@ -245,8 +253,11 @@ int main(int, char **)
 
 	unsigned int shader_program = createProgram("shaders/vshader.vs", "shaders/fshader.fs");
 
-	Camera *cam = new Camera(glm::vec3(-5.0f, 3.0f, 3.5f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f),
+	Camera *cam = new Camera(glm::vec3(0.0f, 0.0f, 10.5f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f),
 							 45.0f, 0.1f, 10000.0f, window);
+
+	// Camera *cam = new Camera(glm::vec3(-5.0f, 3.0f, 3.5f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f),
+	// 						 45.0f, 0.1f, 10000.0f, window);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -317,17 +328,20 @@ int main(int, char **)
 				int screen_width = SCREEN_W;
 				int screen_height = SCREEN_H;
 				glfwGetCursorPos(glfwGetCurrentContext(), &xpos, &ypos);
-
+				cout << "Screen coordinates: (" << xpos << ", " << ypos << ")" << endl;
 				glm::vec3 winPos = glm::vec3(xpos, screen_height - ypos, 0.0f);
 				glm::mat4 modelMatrix = cam->getView();
 				glm::mat4 viewProjection = cam->getProjection();
 				glm::vec4 viewport = glm::vec4(0.0f, 0.0f, screen_width, screen_height);
 				glm::vec3 worldPos = glm::unProject(winPos, modelMatrix, viewProjection, viewport);
-				// worldPos.z = 0.0f;
+
+				worldPos.z = 0.0f;
+				// points.push_back(worldPos);
+				int x = xpos/100;
+				int y = ypos/100;
+				cout<<x<<" "<<y<<endl;
+				points.push_back(glm::vec3(x, y, 0.0f));
 				cout << "World coordinates: (" << worldPos.x << ", " << worldPos.y << ", " << worldPos.z << ")" << endl;
-				// worldPos.z = 0.0f;
-				// Add the point to the vector
-				points.push_back(worldPos);
 			}
 
 			if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
@@ -341,7 +355,9 @@ int main(int, char **)
 			drawingInProgress = 1;
 		}
 
-		
+		if(ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape))){
+			drawLineSegment(glm::vec3(1, 2, 3), glm::vec3(4, 5, 6));
+		}
 
 		// Update the Mesh only if points have changed
 		Mesh *newPointsMesh = createPointsMesh(points);
@@ -381,11 +397,11 @@ int main(int, char **)
 		{
 			remove_duplicates();
 			triangulation();
-			Pointswithoutdups.clear();
-			readele_vector.clear();
+			// Pointswithoutdups.clear();
+			// readele_vector.clear();
 			// flag = 0;
 			readele();
-			mp.clear();
+			// mp.clear();
 			cout << readele_vector.size() << endl;
 			for (int i = 0; i < readele_vector.size(); i++)
 			{
@@ -401,7 +417,7 @@ int main(int, char **)
 			Mesh *newmesh = newMesh();
 			newmesh->draw(shader_program);
 		}
-		calculateAndDrawChordalAxis(points);
+		// calculateAndDrawChordalAxis(points);
 
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwSwapBuffers(window);

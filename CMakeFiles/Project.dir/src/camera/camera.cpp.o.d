@@ -1,7 +1,7 @@
 CMakeFiles/Project.dir/src/camera/camera.cpp.o: \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/src/camera/camera.cpp \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/src/camera/camera.cpp \
  /usr/include/stdc-predef.h \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/src/camera/camera.hpp \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/src/camera/camera.hpp \
  /usr/include/glm/glm.hpp /usr/include/glm/detail/_fixes.hpp \
  /usr/include/c++/11/cmath \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
@@ -216,14 +216,14 @@ CMakeFiles/Project.dir/src/camera/camera.cpp.o: \
  /usr/include/glm/detail/type_half.inl /usr/include/glm/integer.hpp \
  /usr/include/glm/detail/func_integer.inl /usr/include/GL/glew.h \
  /usr/include/GL/glu.h /usr/include/GL/gl.h \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/src/globals.hpp \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/depends/imgui/imgui.h \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/depends/imgui/imconfig.h \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/src/globals.hpp \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui.h \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imconfig.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h /usr/include/string.h \
  /usr/include/strings.h \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/src/utils/utils.hpp \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/depends/imgui/imgui_impl_glfw.h \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/depends/imgui/imgui_impl_opengl3.h \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/src/utils/utils.hpp \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui_impl_glfw.h \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui_impl_opengl3.h \
  /usr/include/glm/gtc/matrix_transform.hpp \
  /usr/include/glm/ext/matrix_projection.hpp \
  /usr/include/glm/gtc/constants.hpp \

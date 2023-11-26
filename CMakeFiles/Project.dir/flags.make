@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I"/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/src" -I"/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/src/utils" -I"/mnt/c/Users/SAUMIL/Downloads/lab2 (3)/lab2/depends/imgui"
+CXX_INCLUDES = -I/mnt/c/Users/SAUMIL/Desktop/CG_Project/src -I/mnt/c/Users/SAUMIL/Desktop/CG_Project/src/utils -I/mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui
 
 CXX_FLAGS = -g
 

@@ -1,8 +1,8 @@
 CMakeFiles/Project.dir/src/mesh/mesh.cpp.o: \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/src/mesh/mesh.cpp \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/src/mesh/mesh.cpp \
  /usr/include/stdc-predef.h \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/src/mesh/mesh.hpp \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/src/drawable.hpp \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/src/mesh/mesh.hpp \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/src/drawable.hpp \
  /usr/include/GL/glew.h /usr/include/c++/11/cstddef \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
@@ -217,13 +217,13 @@ CMakeFiles/Project.dir/src/mesh/mesh.cpp.o: \
  /usr/include/glm/detail/type_half.hpp \
  /usr/include/glm/detail/type_half.inl /usr/include/glm/integer.hpp \
  /usr/include/glm/detail/func_integer.inl \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/src/utils/utils.hpp \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/depends/imgui/imgui.h \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/depends/imgui/imconfig.h \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/src/utils/utils.hpp \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui.h \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imconfig.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h /usr/include/string.h \
  /usr/include/strings.h \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/depends/imgui/imgui_impl_glfw.h \
- /mnt/c/Users/SAUMIL/Downloads/lab2\ (3)/lab2/depends/imgui/imgui_impl_opengl3.h \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui_impl_glfw.h \
+ /mnt/c/Users/SAUMIL/Desktop/CG_Project/depends/imgui/imgui_impl_opengl3.h \
  /usr/include/glm/gtc/matrix_transform.hpp \
  /usr/include/glm/ext/matrix_projection.hpp \
  /usr/include/glm/gtc/constants.hpp \
