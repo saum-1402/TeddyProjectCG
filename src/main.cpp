@@ -39,48 +39,71 @@ vector<int> readele_vector;
 int onlyfirstvertex = 0;
 int flag = 0;
 
-void drawLineSegment(const glm::vec3 &p1, const glm::vec3 &p2) {
-    glBegin(GL_LINES);
-    glVertex3f(1, 2, 3);
-    glVertex3f(4, 5, 6);
-    glEnd();
-}
+
 // Function to calculate the midpoint of an edge
 glm::vec3 calculateEdgeMidpoint(const glm::vec3 &p1, const glm::vec3 &p2) {
     return glm::vec3((p1.x + p2.x) / 2.0f, (p1.y + p2.y) / 2.0f, (p1.z + p2.z) / 2.0f);
 }
 
-// Function to calculate and draw the chordal axis or spine
-void calculateAndDrawChordalAxis(const vector<glm::vec3> &points) {
+void calculateAndDrawChordalAxis(const vector<glm::vec3> &points, unsigned int &program,GLuint vao)
+{
+
+    glUseProgram(program);
+
+    // Bind shader variables
+    int vVertex_attrib_position = glGetAttribLocation(program, "vVertex");
+    if (vVertex_attrib_position == -1)
+    {
+        fprintf(stderr, "Could not bind location: vVertex\n");
+        exit(0);
+    }
+
+    glBindVertexArray(vao);
+
+   GLuint axisVBO;
+    glGenBuffers(1, &axisVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, axisVBO);
+	midpoints.clear();
+
     // Iterate over the triangulation vertices and connect midpoints to form the chordal axis
-    for (size_t i = 0; i < readele_vector.size(); i += 3) {
+    for (size_t i = 0; i < readele_vector.size(); i += 3)
+    {
         int v1_index = readele_vector[i] - 1;
         int v2_index = readele_vector[i + 1] - 1;
+        int v3_index = readele_vector[i + 2] - 1;
 
         // Retrieve vertices from the points vector
         const glm::vec3 &v1 = points[v1_index];
         const glm::vec3 &v2 = points[v2_index];
+        const glm::vec3 &v3 = points[v3_index];
 
-        // Calculate the midpoint of the edge
-        glm::vec3 midpoint = calculateEdgeMidpoint(v1, v2);
-		midpoints.push_back(midpoint);
+        glm::vec3 midpoint1 = calculateEdgeMidpoint(v1, v2);
+        glm::vec3 midpoint2 = calculateEdgeMidpoint(v2, v3);
+        glm::vec3 midpoint3 = calculateEdgeMidpoint(v3, v1);
 
-
-
-
-        // Draw or visualize the chordal axis line segment (midpoint can be used as the axis point)
-        // TODO: Add your drawing or visualization code here.
+        midpoints.push_back(midpoint1);
+        midpoints.push_back(midpoint2);
+        midpoints.push_back(midpoint3);
     }
-	
-	
-	//for (size_t i = 0; i < midpoints.size() - 1; ++i) {
-        //if (i + 1 < midpoints.size()) {
-            //drawLineSegment(midpoints[i], midpoints[i + 1]);
-		//}
-	//}
 
+    // Put midpoints data into the buffer
+    glBufferData(GL_ARRAY_BUFFER, midpoints.size() * sizeof(glm::vec3), midpoints.data(), GL_DYNAMIC_DRAW);
+
+    // Specify the layout of the vertex data
+    glVertexAttribPointer(vVertex_attrib_position, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void *)0);
+    glEnableVertexAttribArray(vVertex_attrib_position);
+
+    // Draw the chordal axis
+    glDrawArrays(GL_LINES, 0, midpoints.size());
+
+    // Clean up
+    glDeleteBuffers(1, &axisVBO);
+
+    glBindVertexArray(0);
+    glUseProgram(0);
 }
 
+// Function to calculate and draw the chordal axis or spine
 
 
 void remove_duplicates()
@@ -356,10 +379,7 @@ int main(int, char **)
 			drawingInProgress = 1;
 		}
 
-		if(ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape))){
-			drawLineSegment(glm::vec3(1, 2, 3), glm::vec3(4, 5, 6));
-		}
-
+		
 		// Update the Mesh only if points have changed
 		Mesh *newPointsMesh = createPointsMesh(points);
 		if (newPointsMesh != pointsMesh)
@@ -413,13 +433,19 @@ int main(int, char **)
 				}
 			}
 			t++;
+			
+			
 		}
+		if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape))){
+			calculateAndDrawChordalAxis(points,shader_program,vao);
+		}
+		
 		if(t>0){
 			Mesh *newmesh = newMesh();
 			newmesh->draw(shader_program);
 		}
-		// calculateAndDrawChordalAxis(points);
-
+		
+		
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwSwapBuffers(window);
 		glfwPollEvents();
