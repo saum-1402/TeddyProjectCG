@@ -45,6 +45,40 @@ glm::vec3 calculateEdgeMidpoint(const glm::vec3 &p1, const glm::vec3 &p2) {
     return glm::vec3((p1.x + p2.x) / 2.0f, (p1.y + p2.y) / 2.0f, (p1.z + p2.z) / 2.0f);
 }
 
+// Function to check if an edge is internal (not a boundary edge)
+bool isInternalEdge(const glm::vec3 &p1, const glm::vec3 &p2)
+{
+    // Iterate over triangles to check if the edge is shared by more than one triangle
+    int sharedTriangleCount = 0;
+
+    for (size_t i = 0; i < readele_vector.size(); i += 3)
+    {
+        int v1_index = readele_vector[i] - 1;
+        int v2_index = readele_vector[i + 1] - 1;
+        int v3_index = readele_vector[i + 2] - 1;
+
+        const glm::vec3 &triV1 = points[v1_index];
+        const glm::vec3 &triV2 = points[v2_index];
+        const glm::vec3 &triV3 = points[v3_index];
+
+        // Check if the edge (p1, p2) matches any edge of the current triangle
+        if ((triV1 == p1 && triV2 == p2) || (triV2 == p1 && triV3 == p2) || (triV3 == p1 && triV1 == p2) ||
+            (triV1 == p2 && triV2 == p1) || (triV2 == p2 && triV3 == p1) || (triV3 == p2 && triV1 == p1))
+        {
+            sharedTriangleCount++;
+        }
+
+        // Break early if the edge is shared by more than one triangle
+        if (sharedTriangleCount > 1)
+        {
+            return true;
+        }
+    }
+
+    // If the edge is shared by exactly one triangle, it is likely a boundary edge
+    return false;
+}
+
 void calculateAndDrawChordalAxis(const vector<glm::vec3> &points, unsigned int &program,GLuint vao)
 {
 
@@ -76,14 +110,22 @@ void calculateAndDrawChordalAxis(const vector<glm::vec3> &points, unsigned int &
         const glm::vec3 &v1 = points[v1_index];
         const glm::vec3 &v2 = points[v2_index];
         const glm::vec3 &v3 = points[v3_index];
+		
 
-        glm::vec3 midpoint1 = calculateEdgeMidpoint(v1, v2);
-        glm::vec3 midpoint2 = calculateEdgeMidpoint(v2, v3);
-        glm::vec3 midpoint3 = calculateEdgeMidpoint(v3, v1);
+        if(isInternalEdge(v1,v2)){
+			 cout << "Internal edge: (" << v1_index << ", " << v2_index << ")" << endl;
+			glm::vec3 midpoint1 = calculateEdgeMidpoint(v1, v2);   
+			midpoints.push_back(midpoint1);}
 
-        midpoints.push_back(midpoint1);
-        midpoints.push_back(midpoint2);
-        midpoints.push_back(midpoint3);
+        if(isInternalEdge(v2,v3)){
+			 cout << "Internal edge: (" << v2_index<< ", " << v3_index<< ")" << endl;
+			glm::vec3 midpoint2 = calculateEdgeMidpoint(v2, v3);
+			midpoints.push_back(midpoint2);}
+	
+        if(isInternalEdge(v3,v1)){
+			 cout << "Internal edge: (" << v3_index << ", " << v1_index << ")" << endl;
+			glm::vec3 midpoint3 = calculateEdgeMidpoint(v3, v1);
+			midpoints.push_back(midpoint3);}
     }
 
     // Put midpoints data into the buffer
@@ -128,7 +170,7 @@ void remove_duplicates()
 void triangulation()
 {
 	ofstream MyFile("new.node");
-	MyFile << to_string(Pointswithoutdups.size() / 3) << " 2 0 0" << endl;
+	MyFile << to_string(Pointswithoutdups.size() / 3) << " 2 0 1" << endl;
 	double x_past = 0;
 	double y_past = 0;
 	int vnumber = 1;
@@ -144,10 +186,10 @@ void triangulation()
 void readele()
 {
 	readele_vector.clear();
-	cout << "readele" << endl;
+	//cout << "readele" << endl;
 	string line;
 	ifstream MyReadfile("new.1.ele");
-	cout << "readele1" << endl;
+	//cout << "readele1" << endl;
 	int i = 0;
 	// int t = 0;
 
@@ -237,8 +279,8 @@ Mesh *newMesh(){
 		// cout<<i<<" ";
 		indices.push_back(i-1);
 	}
-	cout<<verts.size()<<"balh"<<endl;
-	cout<<indices.size()<<"he he"<<endl;
+	//cout<<verts.size()<<"balh"<<endl;
+	//cout<<indices.size()<<"he he"<<endl;
 	return new Mesh(verts.data(), reinterpret_cast<GLuint *> (indices.data()), verts.size()/3, indices.size()/3);
 
 	// GLfloat verts[] = {0, 0, 0,
