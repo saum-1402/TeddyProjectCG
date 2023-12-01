@@ -161,7 +161,8 @@ void remove_duplicates()
 	{
 		Pointswithoutdups.push_back(i.first);
 		Pointswithoutdups.push_back(i.second);
-		Pointswithoutdups.push_back(0.0f);
+		// Pointswithoutdups.push_back(0.0f);
+		Pointswithoutdups.push_back(10.3f);
 	}
 
 
@@ -181,6 +182,39 @@ void triangulation()
 	MyFile.close();
 	system("cd src");
 	system("triangle new");
+}
+
+void CDTtriangulation()
+{
+	ofstream MyFile("new.poly");
+	MyFile << to_string(Pointswithoutdups.size() / 3) << " 2 0 1" << endl; // 1 means it is a boundary marker
+	double x_past = 0;
+	double y_past = 0;
+	int vnumber = 1;
+	for (int i = 0; i < Pointswithoutdups.size(); i += 3)
+	{
+		MyFile << to_string(i / 3 + 1) << " " << to_string(Pointswithoutdups[i]) << " " << to_string(Pointswithoutdups[i + 1]) << " 2" << endl;
+	}
+	MyFile << to_string(Pointswithoutdups.size() / 3) << " 1" << endl;
+	int t = 1;
+	int k = 0;
+	for (int i = 0; i < Pointswithoutdups.size(); i += 3)
+	{
+		if (t + 1 > Pointswithoutdups.size() / 3)
+		{
+			k = 1;
+		}
+		else
+		{
+			k = t + 1;
+		}
+		MyFile << to_string(i / 3 + 1) << " " << to_string(t) << " " << to_string(k) << " 2" << endl;
+		t++;
+	}
+	MyFile << "0" << endl;
+	MyFile.close();
+	system("cd src");
+	system("triangle -pqD new");
 }
 
 void readele()
@@ -270,8 +304,9 @@ Mesh *newMesh(){
 	// 		 1, 1, 0};
 	for (auto p : Pointswithoutdups)
 	{
-		int k = p;
-		verts.push_back(k);
+		// int k = p;
+		// verts.push_back(k);
+		verts.push_back(p);
 	}
 	vector<GLint> indices;
 	// indices = {0, 1, 2};
@@ -395,18 +430,18 @@ int main(int, char **)
 				int screen_height = SCREEN_H;
 				glfwGetCursorPos(glfwGetCurrentContext(), &xpos, &ypos);
 				cout << "Screen coordinates: (" << xpos << ", " << ypos << ")" << endl;
-				glm::vec3 winPos = glm::vec3(xpos, screen_height - ypos, 0.0f);
+				glm::vec3 winPos = glm::vec3(xpos, screen_height - ypos, 0.5f);
 				glm::mat4 modelMatrix = cam->getView();
 				glm::mat4 viewProjection = cam->getProjection();
 				glm::vec4 viewport = glm::vec4(0.0f, 0.0f, screen_width, screen_height);
 				glm::vec3 worldPos = glm::unProject(winPos, modelMatrix, viewProjection, viewport);
 
-				worldPos.z = 0.0f;
-				// points.push_back(worldPos);
+				// worldPos.z = 0.0f;
+				points.push_back(worldPos);
 				int x = xpos/100;
 				int y = ypos/100;
-				cout<<x<<" "<<y<<endl;
-				points.push_back(glm::vec3(x, y, 0.0f));
+				// cout<<x<<" "<<y<<endl;
+				// points.push_back(glm::vec3(x, y, 0.0f));
 				cout << "World coordinates: (" << worldPos.x << ", " << worldPos.y << ", " << worldPos.z << ")" << endl;
 			}
 
@@ -463,6 +498,7 @@ int main(int, char **)
 			// Pointswithoutdups.clear();
 			// readele_vector.clear();
 			// flag = 0;
+			// CDTtriangulation();
 			readele();
 			// mp.clear();
 			cout << readele_vector.size() << endl;
