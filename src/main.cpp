@@ -39,6 +39,7 @@ vector<int> readele_vector;
 int onlyfirstvertex = 0;
 int flag = 0;
 vector<glm::vec3> unique_midpoints;
+vector<glm::vec3> spine_pts;
 
 
 
@@ -85,26 +86,6 @@ bool isInternalEdge(const glm::vec3 &p1, const glm::vec3 &p2)
 
 void calculateAndDrawChordalAxis(vector<double>Pointswithoutdups, unsigned int &program,GLuint vao)
 {
-    glUseProgram(program);
-
-    // Bind shader variables
-    int vVertex_attrib_position = glGetAttribLocation(program, "vVertex");
-    if (vVertex_attrib_position == -1)
-    {
-        fprintf(stderr, "Could not bind location: vVertex\n");
-        exit(0);
-    }
-
-    glBindVertexArray(vao);
-
-   GLuint axisVBO;
-    glGenBuffers(1, &axisVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, axisVBO);
-	midpoints.clear();
-
-    // Create a map to keep track of added midpoints
-    //map<glm::vec2, GLuint> midpointMap;
-
 	
     // Iterate over the triangulation vertices and connect midpoints to form the chordal axis
     for (size_t i = 0; i < readele_vector.size(); i += 3)
@@ -146,34 +127,22 @@ void calculateAndDrawChordalAxis(vector<double>Pointswithoutdups, unsigned int &
 	// cout<<s.size()<<endl;
 	for (auto i : s)
 	{
-		unique_midpoints.push_back(glm::vec3(i.first,i.second,10.3f));
+		// unique_midpoints.push_back(glm::vec3(i.first,i.second,10.3f));
+		points.push_back(glm::vec3(i.first,i.second,10.3f));
+		spine_pts.push_back(glm::vec3(i.first,i.second,10.3f));
 		
 	}
-	// Sort midpoints
-std::sort(midpoints.begin(), midpoints.end(), [](const glm::vec3& a, const glm::vec3& b) {
-    return std::make_pair(a.y, a.x) < std::make_pair(b.y, b.x);
-});
 
-
-    // Put midpoints data into the buffer
-    glBufferData(GL_ARRAY_BUFFER, unique_midpoints.size() * sizeof(glm::vec3), unique_midpoints.data(), GL_DYNAMIC_DRAW);
-
-    // Specify the layout of the vertex data
-    glVertexAttribPointer(vVertex_attrib_position, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void *)0);
-    glEnableVertexAttribArray(vVertex_attrib_position);
-
-    // Draw the chordal axis
-    glDrawArrays(GL_LINE_STRIP, 0, unique_midpoints.size());
-
-    // Clean up
-    glDeleteBuffers(1, &axisVBO);
-
-    glBindVertexArray(0);
-    glUseProgram(0);
 }
 
 // Function to calculate and draw the chordal axis or spine
 
+void make_mesh_3d(){
+	for(auto i:spine_pts){
+		points.push_back(glm::vec3(i.x, i.y, 10.3f + 0.1f));
+		points.push_back(glm::vec3(i.x, i.y, 10.3f - 0.1f));
+	}
+}
 
 void remove_duplicates(){
 	Pointswithoutdups.clear();
@@ -542,6 +511,10 @@ int main(int, char **)
 		}
 		if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape))){
 			calculateAndDrawChordalAxis(Pointswithoutdups,shader_program,vao);
+		}
+
+		if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter))){
+			make_mesh_3d();
 		}
 		
 		if(t>0){
