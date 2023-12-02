@@ -38,6 +38,8 @@ map<int, pair<double, double>> mp;
 vector<int> readele_vector;
 int onlyfirstvertex = 0;
 int flag = 0;
+vector<glm::vec3> unique_midpoints;
+
 
 
 // Function to calculate the midpoint of an edge
@@ -53,13 +55,13 @@ bool isInternalEdge(const glm::vec3 &p1, const glm::vec3 &p2)
 
     for (size_t i = 0; i < readele_vector.size(); i += 3)
     {
-        int v1_index = readele_vector[i] - 1;
-        int v2_index = readele_vector[i + 1] - 1;
-        int v3_index = readele_vector[i + 2] - 1;
+        int v1_index = readele_vector[i];
+        int v2_index = readele_vector[i + 1];
+        int v3_index = readele_vector[i + 2];
 
-        const glm::vec3 &triV1 = points[v1_index];
-        const glm::vec3 &triV2 = points[v2_index];
-        const glm::vec3 &triV3 = points[v3_index];
+        const glm::vec3 &triV1 = glm::vec3(Pointswithoutdups[3*(v1_index-1)],Pointswithoutdups[3*(v1_index-1) +1],Pointswithoutdups[3*(v1_index-1)+2]);
+        const glm::vec3 &triV2 = glm::vec3(Pointswithoutdups[3*(v2_index-1)],Pointswithoutdups[3*(v2_index-1) +1],Pointswithoutdups[3*(v2_index-1)+2]);
+        const glm::vec3 &triV3 = glm::vec3(Pointswithoutdups[3*(v3_index-1)],Pointswithoutdups[3*(v3_index-1) +1],Pointswithoutdups[3*(v3_index-1)+2]);
 
         // Check if the edge (p1, p2) matches any edge of the current triangle
         if ((triV1 == p1 && triV2 == p2) || (triV2 == p1 && triV3 == p2) || (triV3 == p1 && triV1 == p2) ||
@@ -79,9 +81,10 @@ bool isInternalEdge(const glm::vec3 &p1, const glm::vec3 &p2)
     return false;
 }
 
-void calculateAndDrawChordalAxis(const vector<glm::vec3> &points, unsigned int &program,GLuint vao)
-{
 
+
+void calculateAndDrawChordalAxis(vector<double>Pointswithoutdups, unsigned int &program,GLuint vao)
+{
     glUseProgram(program);
 
     // Bind shader variables
@@ -99,44 +102,68 @@ void calculateAndDrawChordalAxis(const vector<glm::vec3> &points, unsigned int &
     glBindBuffer(GL_ARRAY_BUFFER, axisVBO);
 	midpoints.clear();
 
+    // Create a map to keep track of added midpoints
+    //map<glm::vec2, GLuint> midpointMap;
+
+	
     // Iterate over the triangulation vertices and connect midpoints to form the chordal axis
     for (size_t i = 0; i < readele_vector.size(); i += 3)
     {
-        int v1_index = readele_vector[i] - 1;
-        int v2_index = readele_vector[i + 1] - 1;
-        int v3_index = readele_vector[i + 2] - 1;
+        int v1_index = readele_vector[i];
+        int v2_index = readele_vector[i + 1];
+        int v3_index = readele_vector[i + 2];
 
         // Retrieve vertices from the points vector
-        const glm::vec3 &v1 = points[v1_index];
-        const glm::vec3 &v2 = points[v2_index];
-        const glm::vec3 &v3 = points[v3_index];
+   		const glm::vec3 &v1 = glm::vec3(Pointswithoutdups[3*(v1_index-1)],Pointswithoutdups[3*(v1_index-1) +1],Pointswithoutdups[3*(v1_index-1)+2]);
+        const glm::vec3 &v2 = glm::vec3(Pointswithoutdups[3*(v2_index-1)],Pointswithoutdups[3*(v2_index-1) +1],Pointswithoutdups[3*(v2_index-1)+2]);
+        const glm::vec3 &v3 = glm::vec3(Pointswithoutdups[3*(v3_index-1)],Pointswithoutdups[3*(v3_index-1) +1],Pointswithoutdups[3*(v3_index-1)+2]);
 		
-
         if(isInternalEdge(v1,v2)){
 			 cout << "Internal edge: (" << v1_index << ", " << v2_index << ")" << endl;
-			glm::vec3 midpoint1 = calculateEdgeMidpoint(v1, v2);   
-			midpoints.push_back(midpoint1);}
-
+			glm::vec3 midpoint = calculateEdgeMidpoint(v1, v2);   
+			 midpoints.push_back(midpoint);
+			//add_midpoint(midpoint,v1,v2,midpointMap,midpoints);
+        
+        }
         if(isInternalEdge(v2,v3)){
 			 cout << "Internal edge: (" << v2_index<< ", " << v3_index<< ")" << endl;
-			glm::vec3 midpoint2 = calculateEdgeMidpoint(v2, v3);
-			midpoints.push_back(midpoint2);}
+			glm::vec3 midpoint = calculateEdgeMidpoint(v2, v3);
+			 midpoints.push_back(midpoint);}
+			//add_midpoint(midpoint,v1,v2,midpointMap,midpoints);}
 	
         if(isInternalEdge(v3,v1)){
 			 cout << "Internal edge: (" << v3_index << ", " << v1_index << ")" << endl;
-			glm::vec3 midpoint3 = calculateEdgeMidpoint(v3, v1);
-			midpoints.push_back(midpoint3);}
+			glm::vec3 midpoint = calculateEdgeMidpoint(v3, v1);
+			 midpoints.push_back(midpoint);}
+			//add_midpoint(midpoint,v1,v2,midpointMap,midpoints);}
     }
+	unique_midpoints.clear();
+	set<pair<float, float>> s;
+	for (int i = 0; i < midpoints.size(); i += 1)
+	{
+		s.insert(make_pair(static_cast<float>(midpoints[i].x), static_cast<float> (midpoints[i].y)));
+	}
+	// cout<<s.size()<<endl;
+	for (auto i : s)
+	{
+		unique_midpoints.push_back(glm::vec3(i.first,i.second,10.3f));
+		
+	}
+	// Sort midpoints
+std::sort(midpoints.begin(), midpoints.end(), [](const glm::vec3& a, const glm::vec3& b) {
+    return std::make_pair(a.y, a.x) < std::make_pair(b.y, b.x);
+});
+
 
     // Put midpoints data into the buffer
-    glBufferData(GL_ARRAY_BUFFER, midpoints.size() * sizeof(glm::vec3), midpoints.data(), GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, unique_midpoints.size() * sizeof(glm::vec3), unique_midpoints.data(), GL_DYNAMIC_DRAW);
 
     // Specify the layout of the vertex data
     glVertexAttribPointer(vVertex_attrib_position, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void *)0);
     glEnableVertexAttribArray(vVertex_attrib_position);
 
     // Draw the chordal axis
-    glDrawArrays(GL_LINES, 0, midpoints.size());
+    glDrawArrays(GL_LINE_STRIP, 0, unique_midpoints.size());
 
     // Clean up
     glDeleteBuffers(1, &axisVBO);
@@ -148,8 +175,7 @@ void calculateAndDrawChordalAxis(const vector<glm::vec3> &points, unsigned int &
 // Function to calculate and draw the chordal axis or spine
 
 
-void remove_duplicates()
-{
+void remove_duplicates(){
 	Pointswithoutdups.clear();
 	set<pair<float, float>> s;
 	for (int i = 0; i < points.size(); i += 1)
@@ -515,7 +541,7 @@ int main(int, char **)
 			
 		}
 		if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape))){
-			calculateAndDrawChordalAxis(points,shader_program,vao);
+			calculateAndDrawChordalAxis(Pointswithoutdups,shader_program,vao);
 		}
 		
 		if(t>0){
