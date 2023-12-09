@@ -34,7 +34,7 @@ void createAxesLine(unsigned int &, unsigned int &);
 vector<double> Pointswithoutdups;
 
 vector<glm::vec3> midpoints;
-map<int, pair<double, double>> mp;
+map<int, pair<double, double>> mp;  //contains the point to coordinate mapping(x,y,z)
 vector<int> readele_vector;
 int onlyfirstvertex = 0;
 int flag = 0;
@@ -146,19 +146,28 @@ void make_mesh_3d(){
 
 void remove_duplicates(){
 	Pointswithoutdups.clear();
-	set<pair<float, float>> s;
+	// set<pair<float, float>> s;
+	set<vector<float>> vectorSet;
+
 	for (int i = 0; i < points.size(); i += 1)
 	{
-		s.insert(make_pair(static_cast<float>(points[i].x), static_cast<float> (points[i].y)));
+		vector<float> temp;
+		temp.push_back(points[i].x);
+		temp.push_back(points[i].y);
+		temp.push_back(points[i].z);
+		vectorSet.insert(temp);
+		// s.insert(make_pair(static_cast<float>(points[i].x), static_cast<float> (points[i].y)));
 	}
 	// cout<<s.size()<<endl;
-	for (auto i : s)
+	for (auto i : vectorSet)
 	{
-		Pointswithoutdups.push_back(i.first);
-		Pointswithoutdups.push_back(i.second);
+		Pointswithoutdups.push_back(i[0]);
+		Pointswithoutdups.push_back(i[1]);
 		// Pointswithoutdups.push_back(0.0f);
-		Pointswithoutdups.push_back(10.3f);
+		// Pointswithoutdups.push_back(10.3f);
+		Pointswithoutdups.push_back(i[2]);
 	}
+	
 
 
 }
