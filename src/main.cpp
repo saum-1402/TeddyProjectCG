@@ -12,7 +12,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <iostream>
-// #include "utils.h"
 #include "imgui.h"
 #include <cmath>
 #include <iostream>
@@ -32,6 +31,7 @@
 using namespace std;
 
 vector<glm::vec3> points; // Store entered points
+vector<glm::vec3> cuttingpoints; // Store entered points
 void createAxesLine(unsigned int &, unsigned int &);
 
 vector<double> Pointswithoutdups;
@@ -42,11 +42,12 @@ map<int, pair<double, double>> mp;  //contains the point to coordinate mapping(x
 vector<int> readele_vector;
 map<vector<double>, vector<vector<double>>> spineTovertices;
 int onlyfirstvertex = 0;
-int flag = 0;
+int flagforcutting = 0;
 vector<glm::vec3> unique_midpoints;
 vector<glm::vec3> spine_pts;
 vector<glm::vec3> boundary_pts;
 
+int numSegments = 10; 
 
 // Function to calculate the midpoint of an edge
 glm::vec3 calculateEdgeMidpoint(const glm::vec3 &p1, const glm::vec3 &p2) {
@@ -88,225 +89,16 @@ bool isInternalEdge(const glm::vec3 &p1, const glm::vec3 &p2)
 }
 
 
-// terminal triangles need to be found(triangles with 2 external edges)
-// assumptions: the triangle vertices are added in consecutive order
-
-// check this function
-int check_terminal(int a, int b, int c, int last)
-{
-	cout<<"check_terminal"<<endl;
-	if(a==last || b==last || c==last){
-		if(a==1 || b==1 || c==1){
-			return 0;
-		}
-	}
-	if (abs(a - b) == 1 && abs(b - c) == 1 && abs(a - c) == 1)
-	{
-		return 0;
-	}
-	if (abs(a - b) == 1 && abs(b - c) == 1 && abs(a - c) > 1)
-	{
-		return 1;
-	}
-	if (abs(a - b) > 1 && abs(b - c) == 1 && abs(a - c) == 1)
-	{
-		return 1;
-	}
-	if (abs(a - b) == 1 && abs(b - c) > 1 && abs(a - c) == 1)
-	{
-		return 1;
-	}
-	return 0;
-}
-
-int get_sign(int pt, vector<int> line)
-{
-	int a = line[0];
-	int b = line[1];
-
-	double sign = (mp[pt].second - mp[a].second) * (mp[b].first - mp[a].first) - (mp[b].second - mp[a].second) * (mp[pt].first - mp[a].first);
-	if (sign > 0)
-	{
-		return 1;
-	}
-	else if (sign < 0)
-	{
-		return -1;
-	}
-	else
-	{
-		return 0;
-	}
-}
-
-double getdistance(double x1, double y1, double x2, double y2)
-{
-	double dist = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
-	return dist;
-}
-
 double getdistance3d(double x1, double y1, double x2, double y2, double z1, double z2){
 	double dist = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)+(z1-z2)*(z1-z2));
 	return dist;
 }
 
-int semicircleCheck(int pt, double radius, double centrex, double centrey)
-{
-	double x = mp[pt].first;
-	double y = mp[pt].second;
-
-	double dist = sqrt((x - centrex) * (x - centrex) + (y - centrey) * (y - centrey));
-	if (dist <= radius)
-	{
-		return 1;
-	}
-	return 0;
-}
-
-// need to make function to fill pts to check for each internal edge
-void fill_pointsTocheck()
-{
-	for (int i = 0; i < terminal_triangles.size(); i++)
-	{
-		// need to find the internal edge to procceed
-		int a = terminal_triangles[i][0];
-		int b = terminal_triangles[i][1];
-		int c = terminal_triangles[i][2];
-		int sign = 1;
-
-		vector<int> x;
-		vector<int> y;
-		vector<int> z; // z is the internal edge
-
-		if (abs(a - b) == 2)
-		{
-			x = {a, b};
-			y = {a, c};
-			z = {a, b};
-
-			// pointsToCheck.push_back(c);
-			sign = get_sign(c, z);
-		}
-		else if (abs(b - c) == 2)
-		{
-			x = {a, b};
-			y = {a, c};
-			z = {b, c};
-			// pointsToCheck.push_back(a);
-			sign = get_sign(a, z);
-		}
-		else
-		{
-			x = {a, b};
-			y = {b, c};
-			z = {c, a};
-			// pointsToCheck.push_back(b);
-			sign = get_sign(b, z);
-		}
-
-		double pt1x = mp[z[0]].first;
-		double pt1y = mp[z[0]].first;
-
-		double pt2x = mp[z[1]].first;
-		double pt2y = mp[z[1]].second;
-
-		for (int i = 1; i < mp.size() + 1; i += 1)
-		{
-			if (sign == get_sign(i, z))
-			{
-				pointsToCheck[z].push_back(i);
-			}
-		}
-	}
-}
-
-void prune()
-{
-	auto l = max_element(readele_vector.begin(), readele_vector.end());
-	int last = *l; 
-	for (int i = 0; i < readele_vector.size(); i += 3)
-	{
-		int a = readele_vector[i];
-		int b = readele_vector[i + 1];
-		int c = readele_vector[i + 2];
-
-		int x, y;
-
-
-
-		if (check_terminal(a, b, c, last) == 1)
-		{
-			vector<int> temp;
-			temp.push_back(a);
-			temp.push_back(b);
-			temp.push_back(c);
-			terminal_triangles.push_back(temp);
-		}
-	}
-
-	// now we have the terminal triangles
-	// we need to find the terminal edges and do the pruning
-	cout<<"terminal_triangles: "<<terminal_triangles.size()<<endl;
-	for (int i = 0; i < terminal_triangles.size(); i++)
-	{
-		// need to find the internal edge to procceed
-		int a = terminal_triangles[i][0];
-		int b = terminal_triangles[i][1];
-		int c = terminal_triangles[i][2];
-
-		vector<int> x;
-		vector<int> y;
-		vector<int> z; // z is the internal edge
-
-		if (abs(a - b) == 2)
-		{
-			x = {a, b};
-			y = {a, c};
-			z = {a, b};
-		}
-		else if (abs(b - c) == 2)
-		{
-			x = {a, b};
-			y = {a, c};
-			z = {b, c};
-		}
-		else
-		{
-			x = {a, b};
-			y = {b, c};
-			z = {c, a};
-		}
-	}
-
-	// make semicircle and check with the rest of the edges
-	for (auto i : pointsToCheck)
-	{
-		vector<int> line = i.first;
-		vector<int> p = i.second;
-
-		double radius = getdistance(mp[line[0]].first, mp[line[0]].second, mp[line[1]].first, mp[line[1]].second) / 2;
-		double centrex = (mp[line[0]].first + mp[line[1]].first) / 2;
-		double centrey = (mp[line[0]].second + mp[line[1]].second) / 2;
-
-		for(auto j: p){
-			cout<<"j: "<<j<<endl;
-			if (semicircleCheck(j, radius, centrex, centrey) == 0)
-			{
-				cout<<"pt push"<<endl;
-				points.push_back(glm::vec3(mp[line[0]].first, mp[line[0]].second, 10.3));
-			}
-	}
-	}
-}
-
-//function to handle pruning
 
 std::vector<glm::vec3> interpolateSemicircle(const glm::vec3 &start, const glm::vec3 &end, float radius, int numSegments)
 {
 	std::vector<glm::vec3> curvePoints;
-
-	// Calculate the center of the semicircle
-	glm::vec3 center = (start + end) / 2.0f;
+	glm::vec3 center = (start + end) / 2.0f;     // Midpoint of the edge  //need to check if this is the correct way to calculate the center
 
 	// Calculate the normal vector of the plane containing the semicircle
 	glm::vec3 normal = glm::normalize(end - start);
@@ -314,14 +106,13 @@ std::vector<glm::vec3> interpolateSemicircle(const glm::vec3 &start, const glm::
 	// Use the normal vector to create a rotation matrix
 	glm::mat3 rotationMatrix = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::half_pi<float>(), normal));
 
-	// Generate points along the semicircle
+	// Generate points along the semicircle using the rotation matrix
 	for (int i = 0; i <= numSegments; ++i)
 	{
-		float theta = 2.0f*glm::pi<float>() * static_cast<float>(i) / numSegments;
-		glm::vec3 pointOnSemicircle = center + rotationMatrix * (radius * glm::vec3(std::cos(theta), std::sin(theta), 0.0f));
-		curvePoints.push_back(pointOnSemicircle);
+		float theta = 2.0f*glm::pi<float>() * static_cast<float>(i) / numSegments;   //instead of making a semicircle, we can make a circle
+		glm::vec3 pointoncircle = center + rotationMatrix * (radius * glm::vec3(std::cos(theta), std::sin(theta), 0.0f));
+		curvePoints.push_back(pointoncircle);
 	}
-
 	return curvePoints;
 }
 
@@ -420,13 +211,16 @@ void calculateAndDrawChordalAxis(vector<double>Pointswithoutdups, unsigned int &
 // int flag=0;
 void elevation(){
 
-	for(auto i:spine_pts){
-
-		points.push_back(glm::vec3(i.x, i.y, 10.3f + 0.01f));
-		points.push_back(glm::vec3(i.x, i.y, 10.3f - 0.01f));
-		
+	for (auto i : spineTovertices)
+	{
+		vector<double> temp = i.first;			 // spine pt
+		vector<vector<double>> temp1 = i.second; // vertices
+		vector<double> st = temp1[0];
+		vector<double> end = temp1[1];
+		float radius = getdistance3d(st[0], st[1], end[0], end[1], st[2], end[2]) / 2;
+		points.push_back(glm::vec3(temp[0], temp[1], temp[2] + radius));
+		points.push_back(glm::vec3(temp[0], temp[1], temp[2] - radius));
 	}
-	// flag+=1;
 }
 
 void make3dMesh(){
@@ -442,10 +236,6 @@ void make3dMesh(){
 		glm::vec3 startPoint(st[0], st[1], st[2]);
 		glm::vec3 midpt(temp[0], temp[1], temp[2]);
 		glm::vec3 endPoint(end[0], end[1], end[2]);
-		// float radius = 0.1f;
-		cout<<startPoint.x<<" "<<startPoint.y<<" "<<startPoint.z<<endl;
-		int numSegments = 100; // Adjust as needed
-
 		std::vector<glm::vec3> curvePoints1 = interpolateSemicircle(endPoint, startPoint, radius, numSegments);
 		for (auto i : curvePoints1)
 		{
@@ -453,18 +243,12 @@ void make3dMesh(){
 		}
 
 	}
-	
-
-	// Now, 'curvePoints' contains the points forming a quarter oval (circular arc) between the start and end points.
-
-	
-	// Now, 'curvePoints' contains the interpolated points forming the curve between the start and end points.
 }
 
 
 
 // void cutting_plane(){
-
+     //take 3 pts as inputs from the user and make a plane and then using the equation find which pts lie on the left and remove them from the points vector
 // }
 
 vector<double> remove_duplicates(vector<double> Pointswp){
@@ -478,6 +262,9 @@ vector<double> remove_duplicates(vector<double> Pointswp){
 		temp.push_back(points[i].x);
 		temp.push_back(points[i].y);
 		temp.push_back(points[i].z);
+		if(find(cuttingpoints.begin(),cuttingpoints.end(),points[i])!=cuttingpoints.end()){
+			continue;
+		}
 		vectorSet.insert(temp);
 	}
 
@@ -762,6 +549,11 @@ int main(int, char **)
 				glm::vec4 viewport = glm::vec4(0.0f, 0.0f, screen_width, screen_height);
 				glm::vec3 worldPos = glm::unProject(winPos, modelMatrix, viewProjection, viewport);
 
+				if(flagforcutting==1){
+					cuttingpoints.push_back(worldPos);
+					points.push_back(worldPos);
+				}
+				else{
 				// worldPos.z = 0.0f;
 				points.push_back(worldPos);
 				boundary_pts.push_back(worldPos);
@@ -769,7 +561,8 @@ int main(int, char **)
 				int y = ypos/100;
 				// cout<<x<<" "<<y<<endl;
 				// points.push_back(glm::vec3(x, y, 0.0f));
-				cout << "World coordinates: (" << worldPos.x << ", " << worldPos.y << ", " << worldPos.z << ")" << endl;
+				// cout << "World coordinates: (" << worldPos.x << ", " << worldPos.y << ", " << worldPos.z << ")" << endl;
+				}
 			}
 
 			if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
@@ -821,23 +614,18 @@ int main(int, char **)
 		// Check for right mouse button
 		if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Tab)))
 		{
-			// if(flag==1){
-				Pointswithoutdups = remove_duplicates(Pointswithoutdups);
-			// }
-			// else{
-			// Pointswithoutdups = remove_duplicatesFor3dmesh(Pointswithoutdups);
-			// }
+			Pointswithoutdups = remove_duplicates(Pointswithoutdups);
 			triangulation(Pointswithoutdups);
 			readele();
-			cout << readele_vector.size() << endl;
-			for (int i = 0; i < readele_vector.size(); i++)
-			{
-				cout << readele_vector[i] << " ";
-				if (i % 3 == 2)
-				{
-					cout << endl;
-				}
-			}
+			// cout << readele_vector.size() << endl;
+			// for (int i = 0; i < readele_vector.size(); i++)
+			// {
+			// 	cout << readele_vector[i] << " ";
+			// 	if (i % 3 == 2)
+			// 	{
+			// 		cout << endl;
+			// 	}
+			// }
 			t++;
 			
 			
@@ -857,9 +645,9 @@ int main(int, char **)
 			// prune();
 		}
 
-		if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Tab))){
-			// cuttingPlane();
-			CDTtriangulation();
+		if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_C))){
+			numSegments+=10;
+			make3dMesh();
 		}
 		
 		if(t>0){
@@ -882,32 +670,3 @@ int main(int, char **)
 	return 0;
 }
 
-void createAxesLine(unsigned int &program, unsigned int &axis_VAO)
-{
-	glUseProgram(program);
-
-	// Bind shader variables
-	int vVertex_attrib_position = glGetAttribLocation(program, "vVertex");
-	if (vVertex_attrib_position == -1)
-	{
-		fprintf(stderr, "Could not bind location: vVertex\n");
-		exit(0);
-	}
-
-	// Axes data
-	GLfloat axis_vertices[] = {0, 0, 0, 20, 0, 0}; // X-axis
-	glGenVertexArrays(1, &axis_VAO);
-	glBindVertexArray(axis_VAO);
-
-	// Create VBO for the VAO
-	int nVertices = 2; // 2 vertices
-	GLuint vertex_VBO;
-	glGenBuffers(1, &vertex_VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, vertex_VBO);
-	glBufferData(GL_ARRAY_BUFFER, nVertices * 3 * sizeof(GLfloat), axis_vertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(vVertex_attrib_position);
-	glVertexAttribPointer(vVertex_attrib_position, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0); // Unbind the VAO to disable changes outside this function.
-}
