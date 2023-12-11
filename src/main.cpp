@@ -459,7 +459,7 @@ Mesh *newMesh(){
 int main(int, char **)
 {
 	// Setup window
-	GLFWwindow *window = setupWindow(SCREEN_W, SCREEN_H, "Parametric Representations of Surfaces");
+	GLFWwindow *window = setupWindow(SCREEN_W, SCREEN_H, "Teddy Project");
 	ImGuiIO &io = ImGui::GetIO(); // Create IO
 
 	double last_time = 0;
