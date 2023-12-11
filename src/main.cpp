@@ -26,6 +26,8 @@
 #include <algorithm>
 #include <sstream>
 #include <stdlib.h>
+#include <vector>
+
 
 using namespace std;
 
@@ -38,11 +40,12 @@ vector<glm::vec3> midpoints;
 map<vector<int>, vector<int>> pointsToCheck;
 map<int, pair<double, double>> mp;  //contains the point to coordinate mapping(x,y,z)
 vector<int> readele_vector;
+map<vector<double>, vector<vector<double>>> spineTovertices;
 int onlyfirstvertex = 0;
 int flag = 0;
 vector<glm::vec3> unique_midpoints;
 vector<glm::vec3> spine_pts;
-
+vector<glm::vec3> boundary_pts;
 
 
 // Function to calculate the midpoint of an edge
@@ -139,6 +142,11 @@ int get_sign(int pt, vector<int> line)
 double getdistance(double x1, double y1, double x2, double y2)
 {
 	double dist = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+	return dist;
+}
+
+double getdistance3d(double x1, double y1, double x2, double y2, double z1, double z2){
+	double dist = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)+(z1-z2)*(z1-z2));
 	return dist;
 }
 
@@ -293,6 +301,32 @@ void prune()
 
 //function to handle pruning
 
+std::vector<glm::vec3> interpolateSemicircle(const glm::vec3 &start, const glm::vec3 &end, float radius, int numSegments)
+{
+	std::vector<glm::vec3> curvePoints;
+
+	// Calculate the center of the semicircle
+	glm::vec3 center = (start + end) / 2.0f;
+
+	// Calculate the normal vector of the plane containing the semicircle
+	glm::vec3 normal = glm::normalize(end - start);
+
+	// Use the normal vector to create a rotation matrix
+	glm::mat3 rotationMatrix = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::half_pi<float>(), normal));
+
+	// Generate points along the semicircle
+	for (int i = 0; i <= numSegments; ++i)
+	{
+		float theta = 2.0f*glm::pi<float>() * static_cast<float>(i) / numSegments;
+		glm::vec3 pointOnSemicircle = center + rotationMatrix * (radius * glm::vec3(std::cos(theta), std::sin(theta), 0.0f));
+		curvePoints.push_back(pointOnSemicircle);
+	}
+
+	return curvePoints;
+}
+
+
+
 void calculateAndDrawChordalAxis(vector<double>Pointswithoutdups, unsigned int &program,GLuint vao)
 {
 	
@@ -309,22 +343,59 @@ void calculateAndDrawChordalAxis(vector<double>Pointswithoutdups, unsigned int &
         const glm::vec3 &v3 = glm::vec3(Pointswithoutdups[3*(v3_index-1)],Pointswithoutdups[3*(v3_index-1) +1],Pointswithoutdups[3*(v3_index-1)+2]);
 		
         if(isInternalEdge(v1,v2)){
-			 cout << "Internal edge: (" << v1_index << ", " << v2_index << ")" << endl;
+			cout << "Internal edge: (" << v1_index << ", " << v2_index << ")" << endl;
 			glm::vec3 midpoint = calculateEdgeMidpoint(v1, v2);   
-			 midpoints.push_back(midpoint);
-			//add_midpoint(midpoint,v1,v2,midpointMap,midpoints);
-        
-        }
+			midpoints.push_back(midpoint);
+			// add_midpoint(midpoint,v1,v2,midpointMap,midpoints);
+			vector<double> temp;
+			double x = midpoint.x;
+			double y = midpoint.y;
+			double z = midpoint.z;
+			temp.push_back(x);
+			temp.push_back(y);
+			temp.push_back(z);
+
+			vector<vector<double>> temp1;
+			temp1.push_back({v1.x,v1.y,v1.z});
+			temp1.push_back({v2.x,v2.y,v2.z});
+			spineTovertices[temp]=temp1;
+		}
         if(isInternalEdge(v2,v3)){
-			 cout << "Internal edge: (" << v2_index<< ", " << v3_index<< ")" << endl;
+			cout << "Internal edge: (" << v2_index<< ", " << v3_index<< ")" << endl;
 			glm::vec3 midpoint = calculateEdgeMidpoint(v2, v3);
-			 midpoints.push_back(midpoint);}
+			midpoints.push_back(midpoint);
+			vector<double> temp;
+			double x = midpoint.x;
+			double y = midpoint.y;
+			double z = midpoint.z;
+			temp.push_back(x);
+			temp.push_back(y);
+			temp.push_back(z);
+
+			vector<vector<double>> temp1;
+			temp1.push_back({v2.x, v2.y, v2.z});
+			temp1.push_back({v3.x, v3.y, v3.z});
+			spineTovertices[temp] = temp1;
+		}
 			//add_midpoint(midpoint,v1,v2,midpointMap,midpoints);}
 	
         if(isInternalEdge(v3,v1)){
 			 cout << "Internal edge: (" << v3_index << ", " << v1_index << ")" << endl;
 			glm::vec3 midpoint = calculateEdgeMidpoint(v3, v1);
-			 midpoints.push_back(midpoint);}
+			midpoints.push_back(midpoint);
+			vector<double> temp;
+			double x = midpoint.x;
+			double y = midpoint.y;
+			double z = midpoint.z;
+			temp.push_back(x);
+			temp.push_back(y);
+			temp.push_back(z);
+
+			vector<vector<double>> temp1;
+			temp1.push_back({v3.x, v3.y, v3.z});
+			temp1.push_back({v1.x, v1.y, v1.z});
+			spineTovertices[temp] = temp1;
+		}
 			//add_midpoint(midpoint,v1,v2,midpointMap,midpoints);}
     }
 	unique_midpoints.clear();
@@ -346,16 +417,59 @@ void calculateAndDrawChordalAxis(vector<double>Pointswithoutdups, unsigned int &
 
 // Function to calculate and draw the chordal axis or spine
 
-void make_mesh_3d(){
+// int flag=0;
+void elevation(){
+
 	for(auto i:spine_pts){
+
 		points.push_back(glm::vec3(i.x, i.y, 10.3f + 0.01f));
 		points.push_back(glm::vec3(i.x, i.y, 10.3f - 0.01f));
+		
 	}
+	// flag+=1;
 }
 
-void remove_duplicates(){
-	Pointswithoutdups.clear();
-	// set<pair<float, float>> s;
+void make3dMesh(){
+	// Example usage:
+
+	for(auto i:spineTovertices){
+		vector<double> temp = i.first; //spine pt
+		vector<vector<double>> temp1 = i.second; //vertices
+
+		vector<double> st = temp1[0];
+		vector<double> end = temp1[1];
+		float radius = getdistance3d(st[0], st[1], end[0], end[1], st[2], end[2])/2;
+		glm::vec3 startPoint(st[0], st[1], st[2]);
+		glm::vec3 midpt(temp[0], temp[1], temp[2]);
+		glm::vec3 endPoint(end[0], end[1], end[2]);
+		// float radius = 0.1f;
+		cout<<startPoint.x<<" "<<startPoint.y<<" "<<startPoint.z<<endl;
+		int numSegments = 100; // Adjust as needed
+
+		std::vector<glm::vec3> curvePoints1 = interpolateSemicircle(endPoint, startPoint, radius, numSegments);
+		for (auto i : curvePoints1)
+		{
+			points.push_back(i);
+		}
+
+	}
+	
+
+	// Now, 'curvePoints' contains the points forming a quarter oval (circular arc) between the start and end points.
+
+	
+	// Now, 'curvePoints' contains the interpolated points forming the curve between the start and end points.
+}
+
+
+
+// void cutting_plane(){
+
+// }
+
+vector<double> remove_duplicates(vector<double> Pointswp){
+	// Pointswithoutdups.clear();
+	Pointswp.clear();
 	set<vector<float>> vectorSet;
 
 	for (int i = 0; i < points.size(); i += 1)
@@ -365,32 +479,61 @@ void remove_duplicates(){
 		temp.push_back(points[i].y);
 		temp.push_back(points[i].z);
 		vectorSet.insert(temp);
-		// s.insert(make_pair(static_cast<float>(points[i].x), static_cast<float> (points[i].y)));
 	}
-	// cout<<s.size()<<endl;
+
 	for (auto i : vectorSet)
 	{
-		Pointswithoutdups.push_back(i[0]);
-		Pointswithoutdups.push_back(i[1]);
-		// Pointswithoutdups.push_back(0.0f);
-		// Pointswithoutdups.push_back(10.3f);
-		Pointswithoutdups.push_back(i[2]);
+		Pointswp.push_back(i[0]);
+		Pointswp.push_back(i[1]);
+		Pointswp.push_back(i[2]);
 	}
 	
+	return Pointswp;
 
 
 }
 
-void triangulation()
+vector<double> remove_duplicatesFor3dmesh(vector<double> Pointswp)
+{
+	// Pointswithoutdups.clear();
+	Pointswp.clear();
+	set<vector<float>> vectorSet;
+
+	for (int i = 0; i < points.size(); i += 1)
+	{   
+		if(points[i].z==10.3f+0.01f){
+			continue;
+		}
+		vector<float> temp;
+		temp.push_back(points[i].x);
+		temp.push_back(points[i].y);
+		temp.push_back(points[i].z);
+		vectorSet.insert(temp);
+	}
+
+	for (auto i : vectorSet)
+	{
+		Pointswp.push_back(i[0]);
+		Pointswp.push_back(i[1]);
+		Pointswp.push_back(i[2]);
+	}
+
+	return Pointswp;
+}
+
+// Function to perform linear interpolation between two 3D points
+// Function to interpolate points along a circular arc in 3D
+
+void triangulation(vector<double> Pointswd)
 {
 	ofstream MyFile("new.node");
-	MyFile << to_string(Pointswithoutdups.size() / 3) << " 2 0 1" << endl;
+	MyFile << to_string(Pointswd.size() / 3) << " 2 0 1" << endl;
 	double x_past = 0;
 	double y_past = 0;
 	int vnumber = 1;
-	for (int i = 0; i < Pointswithoutdups.size(); i += 3)
+	for (int i = 0; i < Pointswd.size(); i += 3)
 	{
-		MyFile << to_string(i / 3 + 1) << " " << to_string(Pointswithoutdups[i]) << " " << to_string(Pointswithoutdups[i + 1]) << endl;
+		MyFile << to_string(i / 3 + 1) << " " << to_string(Pointswd[i]) << " " << to_string(Pointswd[i + 1]) << endl;
 	}
 	MyFile.close();
 	system("cd src");
@@ -621,6 +764,7 @@ int main(int, char **)
 
 				// worldPos.z = 0.0f;
 				points.push_back(worldPos);
+				boundary_pts.push_back(worldPos);
 				int x = xpos/100;
 				int y = ypos/100;
 				// cout<<x<<" "<<y<<endl;
@@ -640,6 +784,7 @@ int main(int, char **)
 		}
 
 		
+
 		// Update the Mesh only if points have changed
 		Mesh *newPointsMesh = createPointsMesh(points);
 		if (newPointsMesh != pointsMesh)
@@ -676,14 +821,14 @@ int main(int, char **)
 		// Check for right mouse button
 		if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Tab)))
 		{
-			remove_duplicates();
-			triangulation();
-			// Pointswithoutdups.clear();
-			// readele_vector.clear();
-			// flag = 0;
-			// CDTtriangulation();
+			// if(flag==1){
+				Pointswithoutdups = remove_duplicates(Pointswithoutdups);
+			// }
+			// else{
+			// Pointswithoutdups = remove_duplicatesFor3dmesh(Pointswithoutdups);
+			// }
+			triangulation(Pointswithoutdups);
 			readele();
-			// mp.clear();
 			cout << readele_vector.size() << endl;
 			for (int i = 0; i < readele_vector.size(); i++)
 			{
@@ -702,14 +847,20 @@ int main(int, char **)
 		}
 
 		if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter))){
-			make_mesh_3d();
+			elevation();
+
 		}
 
-	if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Z))){
-		cout<<"pruning"<<endl;
-		prune();
-	
-	}
+		if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_X))){  //to complete the mesh
+			// cout<<"pruning"<<endl;
+			make3dMesh();
+			// prune();
+		}
+
+		if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Tab))){
+			// cuttingPlane();
+			CDTtriangulation();
+		}
 		
 		if(t>0){
 			Mesh *newmesh = newMesh();

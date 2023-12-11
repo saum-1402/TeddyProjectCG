@@ -186,3 +186,31 @@ void prune(){
 
 
 }
+
+std::vector<glm::vec3> interpolateSemicircle(const glm::vec3 &start, const glm::vec3 &end, float radius, int numSegments)
+{
+    std::vector<glm::vec3> curvePoints;
+
+    // Calculate the direction vector between start and end points
+    glm::vec3 direction = glm::normalize(end - start);
+
+    // Find an axis perpendicular to the direction vector using the cross product
+    glm::vec3 perpendicularAxis = glm::cross(direction, glm::vec3(0.0f, 0.0f, 1.0f));
+
+    // Calculate the rotation matrix to align the semicircle with the direction vector
+    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::atan(direction.y, direction.x), perpendicularAxis);
+
+    // Generate points along the semicircle
+    for (int i = 0; i <= numSegments / 2; ++i)
+    {
+        float theta = (glm::pi<float>() / static_cast<float>(numSegments)) * static_cast<float>(i);
+        glm::vec3 pointOnSemicircle = start + glm::vec3(rotationMatrix * glm::vec4(radius * std::cos(theta), radius * std::sin(theta), 0.0f, 0.0f));
+        curvePoints.push_back(pointOnSemicircle);
+    }
+
+    return curvePoints;
+}
+
+int main(){
+    
+}
