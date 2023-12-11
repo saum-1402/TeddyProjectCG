@@ -13,6 +13,7 @@
 #include <glm/gtx/string_cast.hpp>
 #include <iostream>
 // #include "utils.h"
+#include "imgui.h"
 #include <cmath>
 #include <iostream>
 #include <cstdlib>
@@ -32,8 +33,9 @@ vector<glm::vec3> points; // Store entered points
 void createAxesLine(unsigned int &, unsigned int &);
 
 vector<double> Pointswithoutdups;
-
+vector<vector<int>> terminal_triangles;
 vector<glm::vec3> midpoints;
+map<vector<int>, vector<int>> pointsToCheck;
 map<int, pair<double, double>> mp;  //contains the point to coordinate mapping(x,y,z)
 vector<int> readele_vector;
 int onlyfirstvertex = 0;
@@ -83,6 +85,213 @@ bool isInternalEdge(const glm::vec3 &p1, const glm::vec3 &p2)
 }
 
 
+// terminal triangles need to be found(triangles with 2 external edges)
+// assumptions: the triangle vertices are added in consecutive order
+
+// check this function
+int check_terminal(int a, int b, int c, int last)
+{
+	cout<<"check_terminal"<<endl;
+	if(a==last || b==last || c==last){
+		if(a==1 || b==1 || c==1){
+			return 0;
+		}
+	}
+	if (abs(a - b) == 1 && abs(b - c) == 1 && abs(a - c) == 1)
+	{
+		return 0;
+	}
+	if (abs(a - b) == 1 && abs(b - c) == 1 && abs(a - c) > 1)
+	{
+		return 1;
+	}
+	if (abs(a - b) > 1 && abs(b - c) == 1 && abs(a - c) == 1)
+	{
+		return 1;
+	}
+	if (abs(a - b) == 1 && abs(b - c) > 1 && abs(a - c) == 1)
+	{
+		return 1;
+	}
+	return 0;
+}
+
+int get_sign(int pt, vector<int> line)
+{
+	int a = line[0];
+	int b = line[1];
+
+	double sign = (mp[pt].second - mp[a].second) * (mp[b].first - mp[a].first) - (mp[b].second - mp[a].second) * (mp[pt].first - mp[a].first);
+	if (sign > 0)
+	{
+		return 1;
+	}
+	else if (sign < 0)
+	{
+		return -1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+double getdistance(double x1, double y1, double x2, double y2)
+{
+	double dist = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+	return dist;
+}
+
+int semicircleCheck(int pt, double radius, double centrex, double centrey)
+{
+	double x = mp[pt].first;
+	double y = mp[pt].second;
+
+	double dist = sqrt((x - centrex) * (x - centrex) + (y - centrey) * (y - centrey));
+	if (dist <= radius)
+	{
+		return 1;
+	}
+	return 0;
+}
+
+// need to make function to fill pts to check for each internal edge
+void fill_pointsTocheck()
+{
+	for (int i = 0; i < terminal_triangles.size(); i++)
+	{
+		// need to find the internal edge to procceed
+		int a = terminal_triangles[i][0];
+		int b = terminal_triangles[i][1];
+		int c = terminal_triangles[i][2];
+		int sign = 1;
+
+		vector<int> x;
+		vector<int> y;
+		vector<int> z; // z is the internal edge
+
+		if (abs(a - b) == 2)
+		{
+			x = {a, b};
+			y = {a, c};
+			z = {a, b};
+
+			// pointsToCheck.push_back(c);
+			sign = get_sign(c, z);
+		}
+		else if (abs(b - c) == 2)
+		{
+			x = {a, b};
+			y = {a, c};
+			z = {b, c};
+			// pointsToCheck.push_back(a);
+			sign = get_sign(a, z);
+		}
+		else
+		{
+			x = {a, b};
+			y = {b, c};
+			z = {c, a};
+			// pointsToCheck.push_back(b);
+			sign = get_sign(b, z);
+		}
+
+		double pt1x = mp[z[0]].first;
+		double pt1y = mp[z[0]].first;
+
+		double pt2x = mp[z[1]].first;
+		double pt2y = mp[z[1]].second;
+
+		for (int i = 1; i < mp.size() + 1; i += 1)
+		{
+			if (sign == get_sign(i, z))
+			{
+				pointsToCheck[z].push_back(i);
+			}
+		}
+	}
+}
+
+void prune()
+{
+	auto l = max_element(readele_vector.begin(), readele_vector.end());
+	int last = *l; 
+	for (int i = 0; i < readele_vector.size(); i += 3)
+	{
+		int a = readele_vector[i];
+		int b = readele_vector[i + 1];
+		int c = readele_vector[i + 2];
+
+		int x, y;
+
+
+
+		if (check_terminal(a, b, c, last) == 1)
+		{
+			vector<int> temp;
+			temp.push_back(a);
+			temp.push_back(b);
+			temp.push_back(c);
+			terminal_triangles.push_back(temp);
+		}
+	}
+
+	// now we have the terminal triangles
+	// we need to find the terminal edges and do the pruning
+	cout<<"terminal_triangles: "<<terminal_triangles.size()<<endl;
+	for (int i = 0; i < terminal_triangles.size(); i++)
+	{
+		// need to find the internal edge to procceed
+		int a = terminal_triangles[i][0];
+		int b = terminal_triangles[i][1];
+		int c = terminal_triangles[i][2];
+
+		vector<int> x;
+		vector<int> y;
+		vector<int> z; // z is the internal edge
+
+		if (abs(a - b) == 2)
+		{
+			x = {a, b};
+			y = {a, c};
+			z = {a, b};
+		}
+		else if (abs(b - c) == 2)
+		{
+			x = {a, b};
+			y = {a, c};
+			z = {b, c};
+		}
+		else
+		{
+			x = {a, b};
+			y = {b, c};
+			z = {c, a};
+		}
+	}
+
+	// make semicircle and check with the rest of the edges
+	for (auto i : pointsToCheck)
+	{
+		vector<int> line = i.first;
+		vector<int> p = i.second;
+
+		double radius = getdistance(mp[line[0]].first, mp[line[0]].second, mp[line[1]].first, mp[line[1]].second) / 2;
+		double centrex = (mp[line[0]].first + mp[line[1]].first) / 2;
+		double centrey = (mp[line[0]].second + mp[line[1]].second) / 2;
+
+		for(auto j: p){
+			cout<<"j: "<<j<<endl;
+			if (semicircleCheck(j, radius, centrex, centrey) == 0)
+			{
+				cout<<"pt push"<<endl;
+				points.push_back(glm::vec3(mp[line[0]].first, mp[line[0]].second, 10.3));
+			}
+	}
+	}
+}
+
+//function to handle pruning
 
 void calculateAndDrawChordalAxis(vector<double>Pointswithoutdups, unsigned int &program,GLuint vao)
 {
@@ -139,8 +348,8 @@ void calculateAndDrawChordalAxis(vector<double>Pointswithoutdups, unsigned int &
 
 void make_mesh_3d(){
 	for(auto i:spine_pts){
-		points.push_back(glm::vec3(i.x, i.y, 10.3f + 0.1f));
-		points.push_back(glm::vec3(i.x, i.y, 10.3f - 0.1f));
+		points.push_back(glm::vec3(i.x, i.y, 10.3f + 0.01f));
+		points.push_back(glm::vec3(i.x, i.y, 10.3f - 0.01f));
 	}
 }
 
@@ -303,48 +512,18 @@ Mesh *createPointsMesh(const vector<glm::vec3> &points)
 
 Mesh *newMesh(){
 	vector<GLfloat> verts;
-	// verts = {0, 0, 0,
-	// 		 1, 0, 0,
-	// 		 1, 1, 0};
 	for (auto p : Pointswithoutdups)
 	{
-		// int k = p;
-		// verts.push_back(k);
 		verts.push_back(p);
 	}
 	vector<GLint> indices;
-	// indices = {0, 1, 2};
 	for(auto i:readele_vector){
-		// cout<<i<<" ";
 		indices.push_back(i-1);
 	}
-	//cout<<verts.size()<<"balh"<<endl;
-	//cout<<indices.size()<<"he he"<<endl;
+
 	return new Mesh(verts.data(), reinterpret_cast<GLuint *> (indices.data()), verts.size()/3, indices.size()/3);
 
-	// GLfloat verts[] = {0, 0, 0,
-	// 				   1, 0, 0,
-	// 				   1, 1, 0,
-	// 				   0, 1, 0,
-	// 				   0, 0, 1,
-	// 				   1, 0, 1,
-	// 				   1, 1, 1,
-	// 				   0, 1, 1};
-
-	// GLuint indices[] = {0, 1, 2};
-	// 					// 0, 2, 3,
-	// 					// 4, 5, 6,
-	// 					// 4, 6, 7,
-	// 					// 0, 4, 7,
-	// 					// 0, 7, 3,
-	// 					// 1, 5, 6,
-	// 					// 1, 6, 2,
-	// 					// 0, 1, 5,
-	// 					// 0, 5, 4,
-	// 					// 3, 2, 6,
-	// 					// 3, 6, 7};
-
-	// return new Mesh(verts, indices, 8, 1);
+	
 }
 
 int main(int, char **)
@@ -525,6 +704,12 @@ int main(int, char **)
 		if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter))){
 			make_mesh_3d();
 		}
+
+	if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Z))){
+		cout<<"pruning"<<endl;
+		prune();
+	
+	}
 		
 		if(t>0){
 			Mesh *newmesh = newMesh();
